@@ -14,6 +14,11 @@ import net.minecraft.client.gui.FontRenderer;
 import sillicat.event.impl.Event2D;
 import sillicat.event.impl.EventKey;
 import sillicat.event.impl.EventUpdate;
+import sillicat.setting.Setting;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Getter
 public abstract class Module implements Subscriber {
@@ -21,6 +26,7 @@ public abstract class Module implements Subscriber {
     private final String name, description;
     private final Category category;
     private final boolean enabledByDefault;
+    private final List<Setting> settingList = new ArrayList<>();
     private boolean toggled;
 
     protected final Minecraft mc = Sillicat.INSTANCE.getMc();
@@ -61,6 +67,10 @@ public abstract class Module implements Subscriber {
             Sillicat.BUS.unsubscribe(eventKeyListener);
             onDisable();
         }
+    }
+
+    protected void addSettings(Setting... settings){
+        settingList.addAll(Arrays.asList(settings));
     }
 
     public void onEnable(){}

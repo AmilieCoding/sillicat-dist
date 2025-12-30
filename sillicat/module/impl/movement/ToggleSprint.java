@@ -8,7 +8,7 @@ import sillicat.module.ModuleInfo;
         name = "ToggleSprint",
         description = "Always sprint enabled.",
         category = Category.Movement,
-        enabled = true
+        enabled = false
 )
 public class ToggleSprint extends Module {
     @Override

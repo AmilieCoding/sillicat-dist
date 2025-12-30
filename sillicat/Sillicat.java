@@ -15,15 +15,17 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.GL11;
-import sillicat.event.impl.Event2D;
 import sillicat.event.impl.EventKey;
-import sillicat.event.impl.EventUpdate;
 import sillicat.module.ModuleManager;
 import sillicat.ui.clickgui.ClickGUIScreen;
 
 @Getter
 public enum Sillicat implements Subscriber {
+
+    // TODO:
+    // https://www.youtube.com/watch?v=dLtap75ZfeI&list=PLa9z_3uMqXcWQui2tT9Qok8QzN7nX7OwK&index=5
+    // SETTINGS & ARRAYLIST.
+
     INSTANCE;
 
     private final String name = "Sillicat";
