@@ -1,0 +1,20 @@
+--- /home/amilie/Desktop/MavenMCP-1.8.9-master-backup/src/main/java/net/minecraft/client/entity/EntityPlayerSP.java	2021-11-02 23:13:50.583920000 +0000
++++ net/minecraft/client/entity/EntityPlayerSP.java	2025-12-29 19:37:09.048554549 +0000
+@@ -51,6 +51,8 @@
+ import net.minecraft.util.ResourceLocation;
+ import net.minecraft.world.IInteractionObject;
+ import net.minecraft.world.World;
++import sillicat.Sillicat;
++import sillicat.event.impl.EventUpdate;
+ 
+ public class EntityPlayerSP extends AbstractClientPlayer
+ {
+@@ -111,6 +113,8 @@
+     {
+         if (this.worldObj.isBlockLoaded(new BlockPos(this.posX, 0.0D, this.posZ)))
+         {
++            // Sillicat Event stuff again :p
++            Sillicat.BUS.post(new EventUpdate());
+             super.onUpdate();
+ 
+             if (this.isRiding())
