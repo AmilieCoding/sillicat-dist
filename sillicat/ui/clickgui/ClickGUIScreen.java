@@ -61,11 +61,6 @@ public class ClickGUIScreen extends GuiScreen {
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        if (mouseButton != 0) {
-            super.mouseClicked(mouseX, mouseY, mouseButton);
-            return;
-        }
-
         ScaledResolution sr = new ScaledResolution(mc);
 
         int boxX = (sr.getScaledWidth() - boxW) / 2;
@@ -74,27 +69,29 @@ public class ClickGUIScreen extends GuiScreen {
         int belowBoxX = boxX;
         int belowBoxY = boxY + boxH + 8;
 
-        // ---- Category clicks ----
-        int xOffset = belowBoxX + 4;
-        for (Category category : Category.values()) {
-            int textWidth = fr.getStringWidth(category.name());
-            int left = xOffset;
-            int right = xOffset + textWidth;
-            int top = belowBoxY + 6;
-            int bottom = top + fr.FONT_HEIGHT;
+        // ---- Category clicks (left only) ----
+        if (mouseButton == 0) {
+            int xOffset = belowBoxX + 4;
+            for (Category category : Category.values()) {
+                int textWidth = fr.getStringWidth(category.name());
+                int left = xOffset;
+                int right = xOffset + textWidth;
+                int top = belowBoxY + 6;
+                int bottom = top + fr.FONT_HEIGHT;
 
-            if (HoverUtil.isHovered(left, top, right, bottom, mouseX, mouseY)) {
-                if (catSelected != category) {
-                    catSelected = category;
-                    scrollOffset = 0;
+                if (HoverUtil.isHovered(left, top, right, bottom, mouseX, mouseY)) {
+                    if (catSelected != category) {
+                        catSelected = category;
+                        scrollOffset = 0;
+                    }
+                    return;
                 }
-                return;
-            }
 
-            xOffset += textWidth + 8;
+                xOffset += textWidth + 8;
+            }
         }
 
-        // ---- Module clicks ----
+        // ---- Module clicks (left = toggle, right = settings) ----
         int yOffset = boxY + 4 - scrollOffset;
         int moduleHeight = 24;
 
@@ -102,13 +99,19 @@ public class ClickGUIScreen extends GuiScreen {
             int moduleTop = yOffset;
             int moduleBottom = yOffset + moduleHeight;
 
-            if (
-                    mouseX >= boxX + 5 &&
-                            mouseX <= boxX + boxW - 5 &&
-                            mouseY >= moduleTop &&
-                            mouseY <= moduleBottom
-            ) {
-                module.toggle();
+            if (HoverUtil.isHovered(
+                    boxX + 5,
+                    moduleTop,
+                    boxX + boxW - 5,
+                    moduleBottom,
+                    mouseX,
+                    mouseY
+            )) {
+                if (mouseButton == 0) {
+                    module.toggle();
+                } else if (mouseButton == 1) {
+                    showSettings(module);
+                }
                 return;
             }
 
@@ -117,6 +120,7 @@ public class ClickGUIScreen extends GuiScreen {
 
         super.mouseClicked(mouseX, mouseY, mouseButton);
     }
+
 
     @Override
     public void handleMouseInput() throws IOException {
@@ -145,7 +149,7 @@ public class ClickGUIScreen extends GuiScreen {
                 // Mouse wheel direction (1.8.9: positive = up)
                 if (scroll > 0) {
                     scrollOffset -= 20;
-                } else {
+                } else if(scroll < 0){
                     scrollOffset += 20;
                 }
 
@@ -216,5 +220,9 @@ public class ClickGUIScreen extends GuiScreen {
                 width * scaleFactor,
                 height * scaleFactor
         );
+    }
+
+    private void showSettings(Module module){
+        mc.displayGuiScreen(new SettingsScreen(module));
     }
 }
