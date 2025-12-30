@@ -31,6 +31,11 @@ public class ClickGUIScreen extends GuiScreen {
     private Category catSelected = Category.Movement;
 
     @Override
+    public boolean doesGuiPauseGame() {
+        return false;
+    }
+
+    @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         ScaledResolution sr = new ScaledResolution(mc);
 
