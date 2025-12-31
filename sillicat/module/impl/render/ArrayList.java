@@ -21,7 +21,7 @@ public class ArrayList extends Module {
     public void on2D(ScaledResolution sr) {
         float offset = 0;
 
-        for(Object module : Sillicat.INSTANCE.getModuleManager().getModules().values().stream().filter(Module::isToggled).sorted(Comparator.comparingInt((Module m) -> m.getName().length()).thenComparing(Module::getName).reversed()).toArray()) {
+        for (Object module : Sillicat.INSTANCE.getModuleManager().getModules().values().stream().filter(Module::isToggled).sorted(Comparator.comparingInt((Module m) -> fr.getStringWidth(m.getName()) + (m.getName().length() * 2)).reversed().thenComparing(Module::getName, String.CASE_INSENSITIVE_ORDER)).toArray()) {
             Module mod = (Module) module;
             if(!mod.getName().equalsIgnoreCase("clickgui") && !mod.getName().equalsIgnoreCase("hud") && !mod.getName().equalsIgnoreCase("arraylist")){
                 RenderUtil.drawRect(sr.getScaledWidth() - fr.getStringWidth(mod.getName()) - 9, offset, 2, 6 + fr.FONT_HEIGHT, 0xFF48BDFA);
