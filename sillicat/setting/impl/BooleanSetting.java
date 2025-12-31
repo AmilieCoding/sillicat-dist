@@ -7,18 +7,18 @@ import sillicat.setting.Setting;
 @Getter
 @Setter
 public class BooleanSetting extends Setting {
-    private boolean state;
+    private boolean value;
 
-    public BooleanSetting(String name, boolean state){
+    public BooleanSetting(String name, boolean defaultValue){
         this.name = name;
-        this.state = state;
+        this.value = defaultValue;
     }
 
-    private boolean isEnabled() {
-        return state;
+    public boolean isEnabled() {
+        return value;
     }
 
     private void toggle(){
-        setState(!isEnabled());
+        value = !value;
     }
 }
