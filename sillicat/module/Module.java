@@ -1,6 +1,7 @@
 package sillicat.module;
 
 import lombok.Getter;
+import lombok.Setter;
 import me.zero.alpine.listener.Listener;
 import me.zero.alpine.listener.Subscribe;
 import me.zero.alpine.listener.Subscriber;
@@ -28,6 +29,9 @@ public abstract class Module implements Subscriber {
     private final boolean enabledByDefault;
     private final List<Setting> settingList = new ArrayList<>();
     private boolean toggled;
+
+    @Setter
+    private int key;
 
     protected final Minecraft mc = Sillicat.INSTANCE.getMc();
     protected final FontRenderer fr = Sillicat.INSTANCE.getFr();

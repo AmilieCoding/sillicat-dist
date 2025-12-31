@@ -1,5 +1,6 @@
 package sillicat.module.impl.movement;
 
+import org.lwjgl.input.Keyboard;
 import sillicat.module.Category;
 import sillicat.module.Module;
 import sillicat.module.ModuleInfo;
@@ -19,6 +20,7 @@ public class Flight extends Module {
 
     public Flight(){
         addSettings(mode, speed);
+        setKey(Keyboard.KEY_G);
     }
 
     private double oldY;
