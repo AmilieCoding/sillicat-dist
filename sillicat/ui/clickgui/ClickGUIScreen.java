@@ -16,9 +16,12 @@ import sillicat.module.Category;
 import sillicat.module.Module;
 import sillicat.util.HoverUtil;
 import sillicat.util.RenderUtil;
+import sillicat.util.font.CustomFontRenderer;
+import sillicat.util.font.FontManager;
 
 public class ClickGUIScreen extends GuiScreen {
     private final FontRenderer fr = Sillicat.INSTANCE.getFr();
+    CustomFontRenderer cfr = Sillicat.INSTANCE.getFontManager().getInter().size(18);
 
     private final int boxW = 400;
     private final int boxH = 248;
@@ -50,8 +53,8 @@ public class ClickGUIScreen extends GuiScreen {
 
         int xOffset = belowBoxX + 4;
         for (Category category : Category.values()) {
-            fr.drawString(category.name(), xOffset, belowBoxY + 6, 0xFFFFFFFF);
-            xOffset += fr.getStringWidth(category.name()) + 8;
+            cfr.drawString(category.name(), xOffset, belowBoxY + 6, 0xFFFFFFFF);
+            xOffset += (int) (cfr.getWidth(category.name()) + 8);
         }
 
         modules = Arrays.asList(
@@ -78,11 +81,11 @@ public class ClickGUIScreen extends GuiScreen {
         if (mouseButton == 0) {
             int xOffset = belowBoxX + 4;
             for (Category category : Category.values()) {
-                int textWidth = fr.getStringWidth(category.name());
+                int textWidth = (int) cfr.getWidth(category.name());
                 int left = xOffset;
                 int right = xOffset + textWidth;
                 int top = belowBoxY + 6;
-                int bottom = top + fr.FONT_HEIGHT;
+                int bottom = (int) (top + cfr.getHeight(category.name()));
 
                 if (HoverUtil.isHovered(left, top, right, bottom, mouseX, mouseY)) {
                     if (catSelected != category) {
@@ -185,15 +188,15 @@ public class ClickGUIScreen extends GuiScreen {
             if (yOffset + moduleHeight > boxY && yOffset < boxY + boxH) {
                 RenderUtil.drawRect(boxX + 5, yOffset, boxW - 10, 20, 0xDD555555);
 
-                fr.drawString(module.getName(), boxX + 14, yOffset + 4, 0xFFFFFFFF);
+                cfr.drawString(module.getName(), boxX + 14, yOffset + 4, 0xFFFFFFFF);
 
-                fr.drawSplitString(
-                        module.getDescription(),
-                        boxX + 14,
-                        yOffset + 4 + fr.FONT_HEIGHT,
-                        boxW - 28,
-                        0xFFDDDDDD
-                );
+                List<String> lines = fr.listFormattedStringToWidth(module.getDescription(), boxW - 28);
+
+                float y = yOffset + 4 + cfr.getHeight("A");
+                for (String line : lines) {
+                    cfr.drawString(line, boxX + 14, y, 0xFFDDDDDD);
+                    y += cfr.getHeight(line) + 2;
+                }
 
                 int toggleX = boxX + boxW - 20;
                 int toggleY = yOffset + 6;

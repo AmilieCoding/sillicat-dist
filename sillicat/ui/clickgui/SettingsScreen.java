@@ -1,6 +1,5 @@
 package sillicat.ui.clickgui;
 
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import sillicat.Sillicat;
@@ -11,12 +10,12 @@ import sillicat.setting.impl.ModeSetting;
 import sillicat.setting.impl.NumberSetting;
 import sillicat.util.HoverUtil;
 import sillicat.util.RenderUtil;
+import sillicat.util.font.CustomFontRenderer;
 
 import java.io.IOException;
 
 public class SettingsScreen extends GuiScreen {
 
-    private final FontRenderer fr = Sillicat.INSTANCE.getFr();
     private final Module module;
 
     private static final int BOX_W = 130;
@@ -37,22 +36,30 @@ public class SettingsScreen extends GuiScreen {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         ScaledResolution sr = new ScaledResolution(mc);
+        CustomFontRenderer cfr = Sillicat.INSTANCE.getFontManager().getInter().size(18);
+
+        if (cfr == null) {
+            super.drawScreen(mouseX, mouseY, partialTicks);
+            return;
+        }
+
+        int fontH = (int) cfr.getHeight("A");
 
         int boxX = sr.getScaledWidth() / 2 - BOX_W / 2;
         int boxY = sr.getScaledHeight() / 2 - BOX_H / 2;
 
         RenderUtil.drawRect(boxX, boxY, BOX_W, BOX_H, 0xDD222222);
 
-        fr.drawString(
+        cfr.drawString(
                 module.getName(),
-                sr.getScaledWidth() / 2 - fr.getStringWidth(module.getName()) / 2,
+                (float) sr.getScaledWidth() / 2 - cfr.getWidth(module.getName()) / 2f,
                 boxY + 2,
                 -1
         );
 
         RenderUtil.drawRect(
                 boxX,
-                boxY + fr.FONT_HEIGHT + 3,
+                boxY + fontH + 3,
                 BOX_W,
                 1,
                 0xDDDDDDDD
@@ -65,7 +72,7 @@ public class SettingsScreen extends GuiScreen {
             if (setting instanceof BooleanSetting) {
                 BooleanSetting bs = (BooleanSetting) setting;
 
-                fr.drawString(bs.name, boxX + 10, yOffset, -1);
+                cfr.drawString(bs.name, boxX + 10, yOffset, -1);
 
                 RenderUtil.drawHollowRect(
                         boxX + BOX_W - 20,
@@ -90,10 +97,11 @@ public class SettingsScreen extends GuiScreen {
             if (setting instanceof ModeSetting) {
                 ModeSetting ms = (ModeSetting) setting;
 
-                fr.drawString(ms.name, boxX + 10, yOffset, -1);
-                fr.drawString("←", boxX + 50, yOffset, -1);
-                fr.drawString(ms.getCurrMode(), boxX + 53 + fr.getStringWidth("←"), yOffset, -1);
-                fr.drawString("→", boxX + 59 + fr.getStringWidth(ms.getCurrMode()), yOffset, -1);
+                cfr.drawString(ms.name, boxX + 10, yOffset, -1);
+
+                cfr.drawString("<", boxX + 50, yOffset, -1);
+                cfr.drawString(ms.getCurrMode(), boxX + 53 + cfr.getWidth("<"), yOffset, -1);
+                cfr.drawString(">", boxX + 59 + cfr.getWidth(ms.getCurrMode()), yOffset, -1);
 
                 yOffset += 15;
             }
@@ -101,24 +109,24 @@ public class SettingsScreen extends GuiScreen {
             if (setting instanceof NumberSetting) {
                 NumberSetting ns = (NumberSetting) setting;
 
-                fr.drawString(ns.name, boxX + 10, yOffset, -1);
+                cfr.drawString(ns.name, boxX + 10, yOffset, -1);
 
-                fr.drawString("←",
-                        boxX + 10 + fr.getStringWidth(ns.name) + 3,
+                cfr.drawString("<",
+                        boxX + 10 + cfr.getWidth(ns.name) + 3,
                         yOffset,
                         -1
                 );
 
                 String val = String.format("%.1f", ns.getVal());
 
-                fr.drawString(val,
-                        boxX + 10 + fr.getStringWidth(ns.name) + 3 + fr.getStringWidth("←") + 3,
+                cfr.drawString(val,
+                        boxX + 10 + cfr.getWidth(ns.name) + 3 + cfr.getWidth("←") + 3,
                         yOffset,
                         -1
                 );
 
-                fr.drawString("→",
-                        boxX + 10 + fr.getStringWidth(ns.name) + 3 + fr.getStringWidth("←") + 3 + fr.getStringWidth(val) + 3,
+                cfr.drawString(">",
+                        boxX + 10 + cfr.getWidth(ns.name) + 3 + cfr.getWidth("←") + 3 + cfr.getWidth(val) + 3,
                         yOffset,
                         -1
                 );
@@ -137,10 +145,10 @@ public class SettingsScreen extends GuiScreen {
                 0xFFF33F3F
         );
 
-        fr.drawString(
+        cfr.drawString(
                 "Back",
-                boxX + BOX_W / 2 - fr.getStringWidth("Back") / 2,
-                footerY + (FOOTER_HEIGHT - fr.FONT_HEIGHT) / 2,
+                boxX + BOX_W / 2f - cfr.getWidth("Back") / 2f,
+                footerY + (FOOTER_HEIGHT - fontH) / 2f,
                 -1
         );
 
@@ -150,6 +158,14 @@ public class SettingsScreen extends GuiScreen {
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         ScaledResolution sr = new ScaledResolution(mc);
+        CustomFontRenderer cfr = Sillicat.INSTANCE.getFontManager().getInter().size(18);
+
+        if (cfr == null) {
+            super.mouseClicked(mouseX, mouseY, mouseButton);
+            return;
+        }
+
+        int fontH = (int) cfr.getHeight("A");
 
         int boxX = sr.getScaledWidth() / 2 - BOX_W / 2;
         int boxY = sr.getScaledHeight() / 2 - BOX_H / 2;
@@ -192,22 +208,33 @@ public class SettingsScreen extends GuiScreen {
             if (setting instanceof ModeSetting) {
                 ModeSetting ms = (ModeSetting) setting;
 
+                // left arrow
+                int leftArrowX = boxX + 50;
+                int leftArrowW = (int) cfr.getWidth("<");
+
                 if (HoverUtil.isHovered(
-                        boxX + 45,
+                        leftArrowX,
                         yOffset,
-                        boxX + 55,
-                        yOffset + fr.FONT_HEIGHT,
+                        leftArrowX + leftArrowW,
+                        yOffset + fontH,
                         mouseX,
                         mouseY
                 )) {
                     ms.cycleBack();
                 }
 
+                // right arrow (placed after mode text)
+                int modeX = boxX + 53 + leftArrowW;
+                int modeW = (int) cfr.getWidth(ms.getCurrMode());
+
+                int rightArrowX = boxX + 59 + modeW;
+                int rightArrowW = (int) cfr.getWidth(">");
+
                 if (HoverUtil.isHovered(
-                        boxX + 55 + fr.getStringWidth(ms.getCurrMode()),
+                        rightArrowX,
                         yOffset,
-                        boxX + 65 + fr.getStringWidth(ms.getCurrMode()),
-                        yOffset + fr.FONT_HEIGHT,
+                        rightArrowX + rightArrowW,
+                        yOffset + fontH,
                         mouseX,
                         mouseY
                 )) {
@@ -222,22 +249,32 @@ public class SettingsScreen extends GuiScreen {
 
                 String val = String.format("%.1f", ns.getVal());
 
+                int nameW = (int) cfr.getWidth(ns.name);
+                int leftArrowX = boxX + 10 + nameW + 3;
+                int leftArrowW = (int) cfr.getWidth("<");
+
                 if (HoverUtil.isHovered(
-                        boxX + 10 + fr.getStringWidth(ns.name) + 2,
+                        leftArrowX,
                         yOffset,
-                        boxX + 10 + fr.getStringWidth(ns.name) + 6,
-                        yOffset + fr.FONT_HEIGHT,
+                        leftArrowX + leftArrowW,
+                        yOffset + fontH,
                         mouseX,
                         mouseY
                 )) {
                     ns.setVal(ns.getVal() - ns.getIncrement());
                 }
 
+                int valX = leftArrowX + leftArrowW + 3;
+                int valW = (int) cfr.getWidth(val);
+
+                int rightArrowX = valX + valW + 3;
+                int rightArrowW = (int) cfr.getWidth(">");
+
                 if (HoverUtil.isHovered(
-                        boxX + 10 + fr.getStringWidth(ns.name) + 3 + fr.getStringWidth("←") + 3 + fr.getStringWidth(val),
+                        rightArrowX,
                         yOffset,
-                        boxX + 10 + fr.getStringWidth(ns.name) + 3 + fr.getStringWidth("←") + 3 + fr.getStringWidth(val) + 6,
-                        yOffset + fr.FONT_HEIGHT,
+                        rightArrowX + rightArrowW,
+                        yOffset + fontH,
                         mouseX,
                         mouseY
                 )) {

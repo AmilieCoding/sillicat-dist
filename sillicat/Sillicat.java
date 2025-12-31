@@ -18,20 +18,20 @@ import org.lwjgl.opengl.Display;
 import sillicat.event.impl.EventKey;
 import sillicat.module.ModuleManager;
 import sillicat.ui.clickgui.ClickGUIScreen;
+import sillicat.util.font.CustomFontRenderer;
+import sillicat.util.font.FontManager;
+
+import java.awt.*;
 
 @Getter
 public enum Sillicat implements Subscriber {
-
-    // TODO:
-    // https://www.youtube.com/watch?v=dLtap75ZfeI&list=PLa9z_3uMqXcWQui2tT9Qok8QzN7nX7OwK&index=5
-    // SETTINGS & ARRAYLIST.
-
     INSTANCE;
 
     private final String name = "Sillicat";
 
     private final Minecraft mc = Minecraft.getMinecraft();
     private final FontRenderer fr = mc.fontRendererObj;
+    private FontManager fontManager;
 
     private ModuleManager moduleManager;
 
@@ -42,6 +42,10 @@ public enum Sillicat implements Subscriber {
 
     public void init(){
         BUS.subscribe(this);
+
+        fontManager = new FontManager();
+        fontManager.preload();
+
         Display.setTitle(name);
 
         moduleManager = new ModuleManager();
@@ -65,4 +69,8 @@ public enum Sillicat implements Subscriber {
             mc.displayGuiScreen(new ClickGUIScreen());
         }
     });
+
+    public FontManager getFontManager(){
+        return fontManager;
+    }
 }
