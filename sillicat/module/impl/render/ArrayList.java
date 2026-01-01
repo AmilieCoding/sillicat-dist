@@ -6,10 +6,13 @@ import sillicat.module.Category;
 import sillicat.module.Module;
 import sillicat.module.ModuleInfo;
 import sillicat.setting.impl.ModeSetting;
+import sillicat.util.AnimationUtil;
 import sillicat.util.RenderUtil;
 import sillicat.util.font.CustomFontRenderer;
 
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 
 @ModuleInfo(
         name = "ArrayList",
@@ -18,25 +21,61 @@ import java.util.Comparator;
         enabled = true
 )
 public class ArrayList extends Module {
+
+    private final Map<String, AnimationUtil> anims = new HashMap<>();
+    private final Map<String, Boolean> lastToggled = new HashMap<>();
+
+    private static final float ROW_H = 15f;
+    private static final float SLIDE_PAD = 14f;
+
     @Override
     public void on2D(ScaledResolution sr) {
         CustomFontRenderer cfr = Sillicat.INSTANCE.getFontManager().getInter().size(18);
-        float offset = 0;
+        float pt = mc.timer.renderPartialTicks;
 
-        // Sorting with module modes taken into account.
-        for (Module mod : Sillicat.INSTANCE.getModuleManager().getModules().values().stream().filter(Module::isToggled).filter(m -> !m.getName().equalsIgnoreCase("clickgui")
-                        && !m.getName().equalsIgnoreCase("hud")
-                        && !m.getName().equalsIgnoreCase("arraylist")).sorted(Comparator.<Module>comparingInt(m -> {
-                            ModeSetting ms = (ModeSetting) m.getSettingList().stream().filter(s -> s instanceof ModeSetting && s.getName().equalsIgnoreCase("Mode")).findFirst().orElse(null);
+        // Update anims for every module every frame
+        for (Module m : Sillicat.INSTANCE.getModuleManager().getModules().values()) {
+            String key = m.getName().toLowerCase();
 
-                    String modeText = ms != null ? " " + ms.getCurrMode() : "";
-                    return (int) (cfr.getWidth(m.getName()) + cfr.getWidth(modeText));}).reversed()).toArray(Module[]::new)) {
-
-            if (mod.getName().equalsIgnoreCase("clickgui") || mod.getName().equalsIgnoreCase("hud") || mod.getName().equalsIgnoreCase("arraylist")) {
-                continue;
+            AnimationUtil anim = anims.get(key);
+            if (anim == null) {
+                anim = new AnimationUtil(0f, 0.07f, AnimationUtil.Easing.EASE_OUT_BACK);
+                anims.put(key, anim);
             }
 
-            ModeSetting ms = (ModeSetting) mod.getSettingList().stream().filter(s -> s instanceof ModeSetting && s.getName().equalsIgnoreCase("Mode")).findFirst().orElse(null);
+            boolean toggled = m.isToggled();
+            boolean wasToggled = lastToggled.getOrDefault(key, false);
+
+            anim.setTarget(toggled ? 1f : 0f);
+            anim.update(pt);
+
+            lastToggled.put(key, toggled);
+        }
+
+        float offset = 0f;
+
+        for (Module mod : Sillicat.INSTANCE.getModuleManager().getModules().values().stream()
+                .filter(m -> !m.getName().equalsIgnoreCase("clickgui")
+                        && !m.getName().equalsIgnoreCase("hud")
+                        && !m.getName().equalsIgnoreCase("arraylist"))
+                .sorted(Comparator.<Module>comparingInt(m -> {
+                    ModeSetting ms = (ModeSetting) m.getSettingList().stream()
+                            .filter(s -> s instanceof ModeSetting && s.getName().equalsIgnoreCase("Mode"))
+                            .findFirst().orElse(null);
+                    String modeText = ms != null ? " " + ms.getCurrMode() : "";
+                    return (int) (cfr.getWidth(m.getName()) + cfr.getWidth(modeText));
+                }).reversed())
+                .toArray(Module[]::new)) {
+
+            AnimationUtil anim = anims.get(mod.getName().toLowerCase());
+            float t = anim != null ? anim.getValue() : (mod.isToggled() ? 1f : 0f);
+
+            // draw while animating in/out
+            if (t <= 0.01f) continue;
+
+            ModeSetting ms = (ModeSetting) mod.getSettingList().stream()
+                    .filter(s -> s instanceof ModeSetting && s.getName().equalsIgnoreCase("Mode"))
+                    .findFirst().orElse(null);
 
             String modeText = ms != null ? " " + ms.getCurrMode() : "";
             String name = mod.getName();
@@ -46,15 +85,24 @@ public class ArrayList extends Module {
             int h = (int) cfr.getHeight(name);
             int totalW = nameW + modeW;
 
-            RenderUtil.drawRect(sr.getScaledWidth() - totalW - 9, offset, 2, 6 + h, 0xFFC226FF);
-            RenderUtil.drawRect(sr.getScaledWidth() - totalW - 7, offset, totalW + 8, 6 + h, 0x90000000);
+            float baseTextX = sr.getScaledWidth() - totalW - 3;
 
-            float x = sr.getScaledWidth() - totalW - 3;
-            cfr.drawString(name, x, 3 + offset, 0xFFFFFFFF);
-            cfr.drawString(modeText, x + nameW, 3 + offset, 0xFFAAAAAA);
+            // Slide: offscreen when t=0, settled when t=1
+            float slide = (1f - t) * (totalW + SLIDE_PAD);
+            float textX = baseTextX + slide;
 
-            offset += 15;
+            float y = offset;
+
+            float barX = textX - 6;
+            float bgX  = textX - 4;
+
+            RenderUtil.drawRect((int) barX, (int) y, 2, 6 + h, 0xFFC226FF);
+            RenderUtil.drawRect((int) bgX,  (int) y, totalW + 8, 6 + h, 0x90000000);
+
+            cfr.drawString(name, textX, 3 + y, 0xFFFFFFFF);
+            cfr.drawString(modeText, textX + nameW, 3 + y, 0xFFAAAAAA);
+
+            offset += ROW_H * (mod.isToggled() ? 1f : t);
         }
     }
 }
-
