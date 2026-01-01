@@ -73,6 +73,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.github.pvpcafe-client</groupId>
+            <artifactId>authlib</artifactId>
+            <version>1.2</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
             <version>3.0.2</version>
