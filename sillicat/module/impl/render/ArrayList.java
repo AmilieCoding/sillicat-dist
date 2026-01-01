@@ -2,11 +2,9 @@ package sillicat.module.impl.render;
 
 import net.minecraft.client.gui.ScaledResolution;
 import sillicat.Sillicat;
-import sillicat.config.ModuleConfig;
 import sillicat.module.Category;
 import sillicat.module.Module;
 import sillicat.module.ModuleInfo;
-import sillicat.module.ModuleManager;
 import sillicat.setting.impl.ModeSetting;
 import sillicat.util.RenderUtil;
 import sillicat.util.font.CustomFontRenderer;

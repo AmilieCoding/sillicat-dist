@@ -19,6 +19,7 @@ import sillicat.config.ConfigManager;
 import sillicat.event.impl.EventKey;
 import sillicat.module.ModuleManager;
 import sillicat.ui.clickgui.ClickGUIScreen;
+import sillicat.util.alts.AltManager;
 import sillicat.util.font.FontManager;
 
 @Getter
@@ -33,6 +34,7 @@ public enum Sillicat implements Subscriber {
 
     private ModuleManager moduleManager;
     private ConfigManager configManager;
+    public AltManager altManager;
 
     public static final EventBus BUS = EventManager.builder()
             .setName("root/sillicat")
@@ -49,6 +51,7 @@ public enum Sillicat implements Subscriber {
 
         moduleManager = new ModuleManager();
         configManager = new ConfigManager();
+        altManager = new AltManager();
 
         configManager.loadConfig();
     }

@@ -17,7 +17,7 @@ public class FontManager {
     }
 
     public CustomFont getFunnel() {
-        return getFont("funnel");
+        return getInter();
     }
     public CustomFont getInter() {
         return getFont("inter");

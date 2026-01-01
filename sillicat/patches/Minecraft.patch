@@ -1,5 +1,5 @@
 --- /home/amilie/Desktop/MavenMCP-1.8.9-master-backup/src/main/java/net/minecraft/client/Minecraft.java	2025-12-30 22:08:19.777017198 +0000
-+++ net/minecraft/client/Minecraft.java	2025-12-29 19:35:35.452340068 +0000
++++ net/minecraft/client/Minecraft.java	2026-01-01 19:56:56.943738991 +0000
 @@ -184,6 +184,8 @@
  import org.lwjgl.opengl.OpenGLException;
  import org.lwjgl.opengl.PixelFormat;
@@ -9,6 +9,15 @@
  
  public class Minecraft implements IThreadListener, IPlayerUsage
  {
+@@ -217,7 +219,7 @@
+     private Entity renderViewEntity;
+     public Entity pointedEntity;
+     public EffectRenderer effectRenderer;
+-    private final Session session;
++    public Session session;
+     private boolean isGamePaused;
+     public FontRenderer fontRendererObj;
+     public FontRenderer standardGalacticFontRenderer;
 @@ -486,6 +488,9 @@
          this.checkGLError("Post startup");
          this.ingameGUI = new GuiIngame(this);
