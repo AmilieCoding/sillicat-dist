@@ -4,7 +4,7 @@ https://www.youtube.com/watch?v=cg5wMogMohw&list=PLa9z_3uMqXcWQui2tT9Qok8QzN7nX7
 See the guide, here.
 
 ## Credits
-Actual authentication screens, and general debugging help when I've got lost: https://github.com/Clueeng
+Actual authentication screens, and general debugging help when I've got lost: https://github.com/Clueeng<br>
 Authlib: https://github.com/pvpcafe-client/authlib
 
 ## Do this after running setup.sh and opening the new project in Intellij.
