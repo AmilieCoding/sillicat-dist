@@ -35,9 +35,10 @@ public class Notification {
 
         RenderUtil.drawRect(x, y, width, height, 0x90000000);
         CustomFontRenderer cfr = Sillicat.INSTANCE.getFontManager().getInter().size(18);
-        cfr.drawString("Sillicat", x + 3, y + 4, -1);
+        CustomFontRenderer cfrLarge = Sillicat.INSTANCE.getFontManager().getInter().size(20);
+        cfrLarge.drawString("Sillicat", x + 3, y + 4, -1);
         cfr.drawString(moduleName + " " + status, x + 3, y + 16, -1);
         int progressBarWidth = (int) ((width) * (1 - remainingPercentage));
-        RenderUtil.drawRect(x, y + height - 2, progressBarWidth, 2, 0xFF48BDFA);
+        RenderUtil.drawRect(x, y + height - 2, progressBarWidth, 2, 0xFFC226FF);
     }
 }
