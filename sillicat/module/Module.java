@@ -15,6 +15,7 @@ import net.minecraft.client.gui.FontRenderer;
 import sillicat.event.impl.Event2D;
 import sillicat.event.impl.EventKey;
 import sillicat.event.impl.EventUpdate;
+import sillicat.notification.NotificationManager;
 import sillicat.setting.Setting;
 
 import java.util.ArrayList;
@@ -58,6 +59,8 @@ public abstract class Module implements Subscriber {
         if(this.toggled == state) return;
         this.toggled = state;
 
+        onToggle();
+
         if(state){
             Sillicat.BUS.subscribe(this);
             Sillicat.BUS.subscribe(eventUpdateListener);
@@ -82,6 +85,14 @@ public abstract class Module implements Subscriber {
     public void onUpdate(){}
     public void on2D(ScaledResolution sr){}
     public void onKey(int key){}
+
+    public void onToggle(){
+        if(mc.theWorld != null){
+            if(!this.getName().equalsIgnoreCase("clickgui")){
+                NotificationManager.addNotification(this.getName(), toggled);
+            }
+        }
+    }
 
     // Actual event calling now.
     @Subscribe

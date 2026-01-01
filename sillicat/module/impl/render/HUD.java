@@ -5,6 +5,8 @@ import org.lwjgl.opengl.GL11;
 import sillicat.module.Category;
 import sillicat.module.Module;
 import sillicat.module.ModuleInfo;
+import sillicat.notification.Notification;
+import sillicat.notification.NotificationManager;
 
 @ModuleInfo(
         name = "HUD",
@@ -20,6 +22,8 @@ public class HUD extends Module {
         GL11.glScaled(1.5, 1.5, 1.5);
         fr.drawString("Sillicat", 1, 1, -1);
         GL11.glPopMatrix();
+
+        NotificationManager.renderNotifications();
     }
 
 }
