@@ -15,13 +15,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
+import sillicat.config.ConfigManager;
 import sillicat.event.impl.EventKey;
 import sillicat.module.ModuleManager;
 import sillicat.ui.clickgui.ClickGUIScreen;
-import sillicat.util.font.CustomFontRenderer;
 import sillicat.util.font.FontManager;
-
-import java.awt.*;
 
 @Getter
 public enum Sillicat implements Subscriber {
@@ -34,6 +32,7 @@ public enum Sillicat implements Subscriber {
     private FontManager fontManager;
 
     private ModuleManager moduleManager;
+    private ConfigManager configManager;
 
     public static final EventBus BUS = EventManager.builder()
             .setName("root/sillicat")
@@ -49,10 +48,14 @@ public enum Sillicat implements Subscriber {
         Display.setTitle(name);
 
         moduleManager = new ModuleManager();
+        configManager = new ConfigManager();
+
+        configManager.loadConfig();
     }
 
     public void shutdown(){
         BUS.unsubscribe(this);
+        configManager.saveConfig();
     }
 
     @Subscribe

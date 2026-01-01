@@ -88,7 +88,7 @@ public class SettingsScreen extends GuiScreen {
                         yOffset + 1,
                         4,
                         4,
-                        bs.isState() ? 0xFF3FF34F : 0x00FFFFFF
+                        bs.isEnabled() ? 0xFF3FF34F : 0x00FFFFFF
                 );
 
                 yOffset += 10;
@@ -199,7 +199,8 @@ public class SettingsScreen extends GuiScreen {
                         mouseX,
                         mouseY
                 )) {
-                    bs.setState(!bs.isState());
+                    bs.setValue(!bs.isEnabled());
+                    Sillicat.INSTANCE.getConfigManager().saveConfig();
                 }
 
                 yOffset += 10;
@@ -221,6 +222,7 @@ public class SettingsScreen extends GuiScreen {
                         mouseY
                 )) {
                     ms.cycleBack();
+                    Sillicat.INSTANCE.getConfigManager().saveConfig();
                 }
 
                 // right arrow (placed after mode text)
@@ -239,6 +241,7 @@ public class SettingsScreen extends GuiScreen {
                         mouseY
                 )) {
                     ms.cycleForwards();
+                    Sillicat.INSTANCE.getConfigManager().saveConfig();
                 }
 
                 yOffset += 15;
@@ -262,6 +265,7 @@ public class SettingsScreen extends GuiScreen {
                         mouseY
                 )) {
                     ns.setVal(ns.getVal() - ns.getIncrement());
+                    Sillicat.INSTANCE.getConfigManager().saveConfig();
                 }
 
                 int valX = leftArrowX + leftArrowW + 3;
@@ -279,6 +283,7 @@ public class SettingsScreen extends GuiScreen {
                         mouseY
                 )) {
                     ns.setVal(ns.getVal() + ns.getIncrement());
+                    Sillicat.INSTANCE.getConfigManager().saveConfig();
                 }
 
                 yOffset += 10;

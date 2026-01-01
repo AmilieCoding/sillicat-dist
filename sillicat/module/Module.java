@@ -91,6 +91,8 @@ public abstract class Module implements Subscriber {
             if(!this.getName().equalsIgnoreCase("clickgui")){
                 NotificationManager.addNotification(this.getName(), toggled);
             }
+
+            Sillicat.INSTANCE.getConfigManager().saveConfig();
         }
     }
 

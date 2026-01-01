@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import net.minecraft.client.renderer.entity.Render;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import sillicat.Sillicat;
@@ -17,7 +16,6 @@ import sillicat.module.Module;
 import sillicat.util.HoverUtil;
 import sillicat.util.RenderUtil;
 import sillicat.util.font.CustomFontRenderer;
-import sillicat.util.font.FontManager;
 
 public class ClickGUIScreen extends GuiScreen {
     private final FontRenderer fr = Sillicat.INSTANCE.getFr();
