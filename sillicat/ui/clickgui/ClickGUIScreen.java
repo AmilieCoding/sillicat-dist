@@ -5,6 +5,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -19,7 +20,9 @@ import sillicat.util.font.CustomFontRenderer;
 
 public class ClickGUIScreen extends GuiScreen {
     private final FontRenderer fr = Sillicat.INSTANCE.getFr();
-    CustomFontRenderer cfr = Sillicat.INSTANCE.getFontManager().getInter().size(18);
+
+    private final CustomFontRenderer titleFont = Sillicat.INSTANCE.getFontManager().getInter().size(18);
+    private final CustomFontRenderer descFont  = Sillicat.INSTANCE.getFontManager().getInter().size(12);
 
     private final int boxW = 400;
     private final int boxH = 248;
@@ -28,8 +31,15 @@ public class ClickGUIScreen extends GuiScreen {
     private final int belowBoxH = 20;
 
     private int scrollOffset = 0;
-    private List<Module> modules;
+    private List<Module> modules = new ArrayList<>();
     private Category catSelected = Category.Movement;
+
+    // Layout constants (keeps everything aligned)
+    private static final int PAD_L = 14;
+    private static final int PAD_R = 14;
+    private static final int ROW_H = 30;
+    private static final int ROW_GAP = 3;
+    private static final int ROW_INSET = 5;
 
     @Override
     public boolean doesGuiPauseGame() {
@@ -51,16 +61,16 @@ public class ClickGUIScreen extends GuiScreen {
 
         int xOffset = belowBoxX + 4;
         for (Category category : Category.values()) {
-            cfr.drawString(category.name(), xOffset, belowBoxY + 6, 0xFFFFFFFF);
-            xOffset += (int) (cfr.getWidth(category.name()) + 8);
+            titleFont.drawString(category.name(), xOffset, belowBoxY + 6, 0xFFFFFFFF);
+            xOffset += (int) (titleFont.getWidth(category.name()) + 8);
         }
 
         modules = Arrays.asList(
                 Sillicat.INSTANCE.getModuleManager().getModules(catSelected)
         );
 
+        updateScrollOffset();       // clamp BEFORE drawing
         renderModuleList(boxX, boxY);
-        updateScrollOffset();
 
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
@@ -79,11 +89,11 @@ public class ClickGUIScreen extends GuiScreen {
         if (mouseButton == 0) {
             int xOffset = belowBoxX + 4;
             for (Category category : Category.values()) {
-                int textWidth = (int) cfr.getWidth(category.name());
+                int textWidth = (int) titleFont.getWidth(category.name());
                 int left = xOffset;
                 int right = xOffset + textWidth;
                 int top = belowBoxY + 6;
-                int bottom = (int) (top + cfr.getHeight(category.name()));
+                int bottom = (int) (top + titleFont.getHeight("A"));
 
                 if (HoverUtil.isHovered(left, top, right, bottom, mouseX, mouseY)) {
                     if (catSelected != category) {
@@ -92,58 +102,48 @@ public class ClickGUIScreen extends GuiScreen {
                     }
                     return;
                 }
-
                 xOffset += textWidth + 8;
             }
         }
 
         // ---- Module clicks (left = toggle, right = settings) ----
         int yOffset = boxY + 4 - scrollOffset;
-        int moduleHeight = 24;
 
         for (Module module : modules) {
             int moduleTop = yOffset;
-            int moduleBottom = yOffset + moduleHeight;
+            int moduleBottom = yOffset + ROW_H;
 
             if (HoverUtil.isHovered(
-                    boxX + 5,
+                    boxX + ROW_INSET,
                     moduleTop,
-                    boxX + boxW - 5,
+                    boxX + boxW - ROW_INSET,
                     moduleBottom,
                     mouseX,
                     mouseY
             )) {
-                if (mouseButton == 0) {
-                    module.toggle();
-                } else if (mouseButton == 1) {
-                    showSettings(module);
-                }
+                if (mouseButton == 0) module.toggle();
+                else if (mouseButton == 1) showSettings(module);
                 return;
             }
 
-            yOffset += moduleHeight;
+            yOffset += ROW_H + ROW_GAP;
         }
 
         super.mouseClicked(mouseX, mouseY, mouseButton);
     }
-
 
     @Override
     public void handleMouseInput() throws IOException {
         int scroll = Mouse.getEventDWheel();
 
         if (scroll != 0) {
-            // Convert raw mouse coords to scaled GUI coords (1.8.9 style)
             int mouseX = Mouse.getEventX() * this.width / this.mc.displayWidth;
             int mouseY = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
 
-            // Recompute layout exactly like drawScreen
             ScaledResolution sr = new ScaledResolution(mc);
-
             int boxX = (sr.getScaledWidth() - boxW) / 2;
             int boxY = (sr.getScaledHeight() - boxH) / 2;
 
-            // Only scroll when mouse is inside the module box
             if (HoverUtil.isHovered(
                     boxX,
                     boxY,
@@ -152,12 +152,8 @@ public class ClickGUIScreen extends GuiScreen {
                     mouseX,
                     mouseY
             )) {
-                // Mouse wheel direction (1.8.9: positive = up)
-                if (scroll > 0) {
-                    scrollOffset -= 20;
-                } else if(scroll < 0){
-                    scrollOffset += 20;
-                }
+                if (scroll > 0) scrollOffset -= 20;
+                else scrollOffset += 20;
 
                 updateScrollOffset();
             }
@@ -166,55 +162,66 @@ public class ClickGUIScreen extends GuiScreen {
         super.handleMouseInput();
     }
 
-    private void updateScrollOffset(){
-        int moduleHeight = 24;
-        int visibleModules = 5;
-        int totalModules = modules.size();
-        int maxScroll = Math.max(0, totalModules * moduleHeight - (visibleModules * moduleHeight));
-        if(scrollOffset < 0) scrollOffset = 0;
-        if(scrollOffset > maxScroll) scrollOffset = maxScroll;
+    private void updateScrollOffset() {
+        int totalRows = modules == null ? 0 : modules.size();
+        int contentH = totalRows * (ROW_H + ROW_GAP) - ROW_GAP;
+        int maxScroll = Math.max(0, contentH - (boxH - 8)); // -8 for top/bottom breathing room
+
+        if (scrollOffset < 0) scrollOffset = 0;
+        if (scrollOffset > maxScroll) scrollOffset = maxScroll;
     }
 
     private void renderModuleList(int boxX, int boxY) {
-        int moduleHeight = 24;
         int yOffset = boxY + 4 - scrollOffset;
 
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
         scissor(boxX, boxY, boxW, boxH);
 
         for (Module module : modules) {
-            if (yOffset + moduleHeight > boxY && yOffset < boxY + boxH) {
-                RenderUtil.drawRect(boxX + 5, yOffset, boxW - 10, 20, 0xDD555555);
+            if (yOffset + ROW_H > boxY && yOffset < boxY + boxH) {
+                RenderUtil.drawRect(boxX + ROW_INSET, yOffset, boxW - (ROW_INSET * 2), ROW_H, 0xDD555555);
 
-                cfr.drawString(module.getName(), boxX + 14, yOffset + 4, 0xFFFFFFFF);
+                // Title line
+                float nameX = boxX + PAD_L;
+                float nameY = yOffset + 5;
+                titleFont.drawString(module.getName(), nameX, nameY, 0xFFFFFFFF);
 
-                List<String> lines = fr.listFormattedStringToWidth(module.getDescription(), boxW - 28);
+                // Description lines (wrapped using descFont widths)
+                float descX = boxX + PAD_L;
+                float descStartY = nameY + titleFont.getHeight("A") + 5;
+                float wrapW = boxW - (PAD_L + PAD_R);
 
-                float y = yOffset + 4 + cfr.getHeight("A");
+                List<String> lines = wrapCfr(module.getDescription(), wrapW, descFont);
+
+                float y = descStartY;
+                float lineH = descFont.getHeight("A");
+
                 for (String line : lines) {
-                    cfr.drawString(line, boxX + 14, y, 0xFFDDDDDD);
-                    y += cfr.getHeight(line) + 2;
+                    if (y + lineH > yOffset + ROW_H - 2) break; // don't overflow row
+                    descFont.drawString(line, descX, y, 0xFFDDDDDD);
+                    y += lineH + 1;
                 }
 
+                // Toggle box, vertically centered
+                int toggleSize = 10;
                 int toggleX = boxX + boxW - 20;
-                int toggleY = yOffset + 6;
+                int toggleY = yOffset + (ROW_H - toggleSize) / 2;
 
-                RenderUtil.drawHollowRect(toggleX, toggleY, 10, 10, 1, -1);
+                RenderUtil.drawHollowRect(toggleX, toggleY, toggleSize, toggleSize, 1, -1);
                 RenderUtil.drawRect(
                         toggleX + 1,
                         toggleY + 1,
-                        8,
-                        8,
+                        toggleSize - 1,
+                        toggleSize - 1,
                         module.isToggled() ? 0xFF3FF34F : 0xFFFA4848
                 );
             }
 
-            yOffset += moduleHeight;
+            yOffset += ROW_H + ROW_GAP;
         }
 
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
     }
-
 
     private void scissor(int x, int y, int width, int height) {
         ScaledResolution sr = new ScaledResolution(mc);
@@ -228,7 +235,58 @@ public class ClickGUIScreen extends GuiScreen {
         );
     }
 
-    private void showSettings(Module module){
+    private void showSettings(Module module) {
         mc.displayGuiScreen(new SettingsScreen(module));
+    }
+
+    // ---- CustomFontRenderer wrapping (keeps § formatting) ----
+    private static List<String> wrapCfr(String text, float maxWidth, CustomFontRenderer cfr) {
+        List<String> out = new ArrayList<>();
+        if (text == null || text.isEmpty()) return out;
+
+        // Respect manual newlines too
+        String[] paragraphs = text.split("\n");
+        for (String para : paragraphs) {
+            if (para.isEmpty()) {
+                out.add("");
+                continue;
+            }
+
+            String[] words = para.split(" ");
+            StringBuilder line = new StringBuilder();
+            String activeFormat = "";
+
+            for (String word : words) {
+                activeFormat = getLastFormat(activeFormat + word);
+
+                String test = line.length() == 0 ? (activeFormat + word) : (line + " " + word);
+                if (cfr.getWidth(test) <= maxWidth) {
+                    if (line.length() != 0) line.append(" ");
+                    if (line.length() == 0 && !activeFormat.isEmpty()) line.append(activeFormat);
+                    line.append(word);
+                } else {
+                    if (line.length() > 0) out.add(line.toString());
+                    line.setLength(0);
+                    if (!activeFormat.isEmpty()) line.append(activeFormat);
+                    line.append(word);
+                }
+            }
+
+            if (line.length() > 0) out.add(line.toString());
+        }
+
+        return out;
+    }
+
+    private static String getLastFormat(String s) {
+        StringBuilder fmt = new StringBuilder();
+        for (int i = 0; i < s.length() - 1; i++) {
+            if (s.charAt(i) == '\u00A7') {
+                char c = Character.toLowerCase(s.charAt(i + 1));
+                if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || c == 'r') fmt.setLength(0);
+                fmt.append('\u00A7').append(c);
+            }
+        }
+        return fmt.toString();
     }
 }
