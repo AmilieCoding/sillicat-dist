@@ -5,19 +5,23 @@ import net.minecraft.potion.PotionEffect;
 import sillicat.module.Category;
 import sillicat.module.Module;
 import sillicat.module.ModuleInfo;
+import sillicat.setting.impl.BindSetting;
 import sillicat.setting.impl.ModeSetting;
 
 @ModuleInfo(
         name = "Fullbright",
         description = "Fixes your sight.",
         category = Category.Render,
+        defaultKey = -1,
         enabled = false
 )
 public class Fullbright extends Module {
     private final ModeSetting mode = new ModeSetting("Mode", "Gamma", "Night Vision");
 
+
     public Fullbright(){
         addSettings(mode);
+        setKey(getKey());
     }
 
     private float oldBright;

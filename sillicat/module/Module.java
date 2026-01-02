@@ -17,6 +17,7 @@ import sillicat.event.impl.EventKey;
 import sillicat.event.impl.EventUpdate;
 import sillicat.notification.NotificationManager;
 import sillicat.setting.Setting;
+import sillicat.setting.impl.BindSetting;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,14 +32,18 @@ public abstract class Module implements Subscriber {
     private final List<Setting> settingList = new ArrayList<>();
     private boolean toggled;
 
+    private final int defaultKey;
     @Setter
     private int key;
 
     protected final Minecraft mc = Sillicat.INSTANCE.getMc();
     protected final FontRenderer fr = Sillicat.INSTANCE.getFr();
 
+    public final BindSetting bind = new BindSetting("Bind", this);
+
     // Setting those from moduleinfo.
     public Module(){
+
         ModuleInfo info = getClass().getAnnotation(ModuleInfo.class);
         Validate.notNull(info, "Annotation? Where? (Confused annotation exception.)");
 
@@ -47,7 +52,16 @@ public abstract class Module implements Subscriber {
         this.category = info.category();
         this.enabledByDefault = info.enabled();
 
+        this.defaultKey = info.defaultKey();
+        this.key = this.defaultKey;
+
+        addSettings(bind);
+
         if(enabledByDefault) toggle();
+    }
+
+    public void resetKeyToDefault(){
+        this.key = this.defaultKey;
     }
 
     // Setting enabled, subscribe to event listeners.

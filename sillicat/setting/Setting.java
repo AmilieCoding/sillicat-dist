@@ -1,10 +1,12 @@
 package sillicat.setting;
 
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 public class Setting {
-    public String name;
+    private final String name;
+
+    public Setting(String name) {
+        this.name = name;
+    }
 }

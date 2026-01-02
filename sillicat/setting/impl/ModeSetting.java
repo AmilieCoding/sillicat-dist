@@ -17,7 +17,7 @@ public class ModeSetting extends Setting {
     private int modeIndex;
 
     public ModeSetting(String name, String... modes){
-        this.name = name;
+        super(name);
         this.modes = Arrays.asList(modes);
         this.modeIndex = this.modes.indexOf(modes[0]);
         if(currMode == null) currMode = modes[0];

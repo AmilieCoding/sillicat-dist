@@ -5,6 +5,7 @@ import sillicat.Sillicat;
 import sillicat.module.Category;
 import sillicat.module.Module;
 import sillicat.module.ModuleInfo;
+import sillicat.setting.impl.BindSetting;
 import sillicat.setting.impl.ModeSetting;
 import sillicat.util.AnimationUtil;
 import sillicat.util.RenderUtil;
@@ -18,9 +19,14 @@ import java.util.Map;
         name = "ArrayList",
         description = "Show active modules in a neat way!",
         category = Category.Render,
+        defaultKey = -1,
         enabled = true
 )
 public class ArrayList extends Module {
+
+    public ArrayList(){
+        setKey(getKey());
+    }
 
     private final Map<String, AnimationUtil> anims = new HashMap<>();
     private final Map<String, Boolean> lastToggled = new HashMap<>();

@@ -32,7 +32,7 @@ public class Notification {
         long elapsed = System.currentTimeMillis() - startTime;
         double progress = (double) elapsed / displayTime;
 
-        int width = 95;
+        int width = 105;
         int height = 30;
 
         int baseX = sr.getScaledWidth() - width - 2;

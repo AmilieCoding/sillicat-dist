@@ -5,6 +5,7 @@ import org.lwjgl.input.Keyboard;
 import sillicat.module.Category;
 import sillicat.module.Module;
 import sillicat.module.ModuleInfo;
+import sillicat.setting.impl.BindSetting;
 import sillicat.setting.impl.ModeSetting;
 import sillicat.setting.impl.NumberSetting;
 
@@ -12,6 +13,7 @@ import sillicat.setting.impl.NumberSetting;
         name = "Flight",
         description = "Accelerate at speed through the air.",
         category = Category.Movement,
+        defaultKey = Keyboard.KEY_G,
         enabled = false
 )
 
@@ -22,7 +24,7 @@ public class Flight extends Module {
 
     public Flight(){
         addSettings(mode, speed, server);
-        setKey(Keyboard.KEY_G);
+        setKey(getKey());
     }
 
     private double oldY;

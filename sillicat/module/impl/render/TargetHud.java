@@ -11,6 +11,7 @@ import sillicat.Sillicat;
 import sillicat.module.Category;
 import sillicat.module.Module;
 import sillicat.module.ModuleInfo;
+import sillicat.setting.impl.BindSetting;
 import sillicat.util.RenderUtil;
 import sillicat.util.font.CustomFontRenderer;
 
@@ -21,9 +22,15 @@ import java.util.List;
         name = "TargetHUD",
         description = "Displays opponent information",
         category = Category.Render,
+        defaultKey = -1,
         enabled = false
 )
 public class TargetHud extends Module {
+
+    public TargetHud(){
+        setKey(getKey());
+    }
+
     private final List<Long> clicks = new ArrayList<Long>();
 
     private int width;

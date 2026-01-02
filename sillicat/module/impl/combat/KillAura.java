@@ -9,6 +9,7 @@ import org.lwjgl.input.Keyboard;
 import sillicat.module.Category;
 import sillicat.module.Module;
 import sillicat.module.ModuleInfo;
+import sillicat.setting.impl.BindSetting;
 import sillicat.setting.impl.BooleanSetting;
 import sillicat.setting.impl.ModeSetting;
 import sillicat.setting.impl.NumberSetting;
@@ -20,6 +21,7 @@ import java.util.List;
         name = "KillAura",
         description = "Automatically target mobs, players and others.",
         category = Category.Combat,
+        defaultKey = -1,
         enabled = false
 )
 
@@ -46,7 +48,7 @@ public class KillAura extends Module {
     private float serverPitch = 0;
 
     public KillAura(){
-        setKey(Keyboard.KEY_R);
+        setKey(getKey());
         addSettings(players, passive, mobs, teams, invisible, noswing, range, rotationSpeed, delay, mode);
     }
 

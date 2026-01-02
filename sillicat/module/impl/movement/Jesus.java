@@ -6,12 +6,14 @@ import org.lwjgl.input.Keyboard;
 import sillicat.module.Category;
 import sillicat.module.Module;
 import sillicat.module.ModuleInfo;
+import sillicat.setting.impl.BindSetting;
 import sillicat.setting.impl.ModeSetting;
 
 @ModuleInfo(
         name = "Jesus",
         description = "Walk on water!",
         category = Category.Movement,
+        defaultKey = Keyboard.KEY_J,
         enabled = false
 )
 
@@ -20,7 +22,7 @@ public class Jesus extends Module {
 
     public Jesus(){
         addSettings(mode);
-        setKey(Keyboard.KEY_J);
+        setKey(getKey());
     }
 
     @Override

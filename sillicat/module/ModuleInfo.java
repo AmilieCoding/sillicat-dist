@@ -11,5 +11,6 @@ public @interface ModuleInfo {
     String name();
     String description() default "";
     Category category();
+    int defaultKey() default -1;
     boolean enabled() default false;
 }

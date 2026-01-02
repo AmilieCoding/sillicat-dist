@@ -10,7 +10,7 @@ public class BooleanSetting extends Setting {
     private boolean value;
 
     public BooleanSetting(String name, boolean defaultValue){
-        this.name = name;
+        super(name);
         this.value = defaultValue;
     }
 

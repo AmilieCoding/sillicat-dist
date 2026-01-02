@@ -4,6 +4,7 @@ import net.minecraft.client.gui.inventory.GuiChest;
 import sillicat.module.Category;
 import sillicat.module.Module;
 import sillicat.module.ModuleInfo;
+import sillicat.setting.impl.BindSetting;
 import sillicat.setting.impl.BooleanSetting;
 import sillicat.setting.impl.ModeSetting;
 import sillicat.setting.impl.NumberSetting;
@@ -16,6 +17,7 @@ import net.minecraft.inventory.Slot;
         name = "ChestStealer",
         description = "Remove items from chests efficiently.",
         category = Category.Player,
+        defaultKey = -1,
         enabled = false
 )
 public class ChestStealer extends Module {
@@ -24,11 +26,13 @@ public class ChestStealer extends Module {
     public static final NumberSetting speed = new NumberSetting("Speed (ms)", 100, 5, 100, 5);
     private final BooleanSetting close = new BooleanSetting("Close", false);
 
+
     private boolean finished = false;
     private long lastAction = 0L;
 
     public ChestStealer() {
         addSettings(mode, speed, close);
+        setKey(getKey());
     }
 
     @Override

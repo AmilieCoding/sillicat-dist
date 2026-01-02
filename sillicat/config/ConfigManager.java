@@ -39,6 +39,7 @@ public class ConfigManager {
                 ModuleConfig moduleConfig = new ModuleConfig();
                 moduleConfig.name = module.getName();
                 moduleConfig.toggled = module.isToggled();
+                moduleConfig.key = module.getKey();
                 moduleConfig.settings = new ArrayList<>();
 
                 for(Setting setting : module.getSettingList()){
@@ -83,6 +84,9 @@ public class ConfigManager {
             for(ModuleConfig moduleConfig : configData.modules){
                 Module module = moduleManager.getModule(moduleConfig.name);
                 if(module != null){
+                    if(moduleConfig.key != -1){
+                        module.setKey(moduleConfig.key);
+                    }
                     module.setEnabled(moduleConfig.toggled);
                     for(SettingConfig settingConfig : moduleConfig.settings){
                         Setting setting = module.getSettingList().stream().filter(s -> s.getName().equalsIgnoreCase(settingConfig.name)).findFirst().orElse(null);
