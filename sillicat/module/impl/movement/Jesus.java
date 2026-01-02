@@ -1,5 +1,6 @@
 package sillicat.module.impl.movement;
 
+import net.minecraft.network.play.client.C03PacketPlayer;
 import net.minecraft.util.Vec3;
 import org.lwjgl.input.Keyboard;
 import sillicat.module.Category;
@@ -33,7 +34,13 @@ public class Jesus extends Module {
                 mc.thePlayer.fallDistance = 0.0F;
             }
             if(mode.getCurrMode().equalsIgnoreCase("Walk")){
-
+                if(mc.thePlayer.isInWater() || mc.thePlayer.isInLava()){
+                    if(mc.thePlayer.ticksExisted % 5 == 0){
+                        mc.thePlayer.sendQueue.addToSendQueue(
+                                new C03PacketPlayer(true)
+                        );
+                    }
+                }
             }
         }
     }

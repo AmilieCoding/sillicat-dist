@@ -63,8 +63,6 @@ public class Flight extends Module {
                         mc.thePlayer.motionY = -.125D;
                         mc.thePlayer.jumpMovementFactor *= 1.12337f;
 
-                        long now = System.currentTimeMillis();
-
                         if(mc.thePlayer.ticksExisted % 5 == 0){
                             mc.thePlayer.sendQueue.addToSendQueue(
                                     new C03PacketPlayer.C04PacketPlayerPosition(
@@ -75,8 +73,6 @@ public class Flight extends Module {
                                         new C03PacketPlayer(true)
                                 );
                             }
-
-                            lastC04Time = now;
                         }
                     }
                 }
