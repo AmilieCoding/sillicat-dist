@@ -1,0 +1,3 @@
+hi, please put fonts in /resources/assets/minecraft/fonts
+
+thanks
