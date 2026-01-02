@@ -5,6 +5,7 @@ import org.lwjgl.input.Keyboard;
 import sillicat.module.Category;
 import sillicat.module.Module;
 import sillicat.module.ModuleInfo;
+import sillicat.setting.impl.ModeSetting;
 
 @ModuleInfo(
         name = "Jesus",
@@ -14,7 +15,10 @@ import sillicat.module.ModuleInfo;
 )
 
 public class Jesus extends Module {
+    private final ModeSetting mode = new ModeSetting("Mode", "Walk", "Bounce");
+
     public Jesus(){
+        addSettings(mode);
         setKey(Keyboard.KEY_J);
     }
 
@@ -22,10 +26,15 @@ public class Jesus extends Module {
     public void onUpdate() {
         if (mc.thePlayer == null) return;
 
-        if (mc.thePlayer.isInWater()) {
-            mc.thePlayer.motionY = 10.0;
-            mc.thePlayer.onGround = true;      // helps stop sinking client-side
-            mc.thePlayer.fallDistance = 0.0F;  // avoids fall damage weirdness if you bob
+        if(mode.getCurrMode().equalsIgnoreCase("Bounce")){
+            if (mc.thePlayer.isInWater()) {
+                mc.thePlayer.motionY = 10.0;
+                mc.thePlayer.onGround = true;
+                mc.thePlayer.fallDistance = 0.0F;
+            }
+            if(mode.getCurrMode().equalsIgnoreCase("Walk")){
+
+            }
         }
     }
 }

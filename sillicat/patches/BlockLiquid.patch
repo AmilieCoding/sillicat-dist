@@ -1,0 +1,36 @@
+--- /home/amilie/Desktop/MavenMCP-1.8.9-master-backup/src/main/java/net/minecraft/block/BlockLiquid.java	2025-12-30 22:08:19.767217629 +0000
++++ net/minecraft/block/BlockLiquid.java	2026-01-02 10:36:55.077609372 +0000
+@@ -19,6 +19,8 @@
+ import net.minecraft.world.IBlockAccess;
+ import net.minecraft.world.World;
+ import net.minecraft.world.biome.BiomeColorHelper;
++import sillicat.Sillicat;
++import sillicat.module.Module;
+ 
+ public abstract class BlockLiquid extends Block
+ {
+@@ -109,11 +111,22 @@
+         return false;
+     }
+ 
+-    public AxisAlignedBB getCollisionBoundingBox(World worldIn, BlockPos pos, IBlockState state)
+-    {
++    public AxisAlignedBB getCollisionBoundingBox(World worldIn, BlockPos pos, IBlockState state) {
++        boolean jesusEnabled = Sillicat.INSTANCE.getModuleManager().getModules().values()
++                .stream()
++                .anyMatch(m -> m.getName().equalsIgnoreCase("Jesus") && m.isToggled());
++
++        if (jesusEnabled) {
++            return AxisAlignedBB.fromBounds(
++                    pos.getX() + this.minX, pos.getY() + this.minY, pos.getZ() + this.minZ,
++                    pos.getX() + this.maxX, pos.getY() + this.maxY, pos.getZ() + this.maxZ
++            );
++        }
++
+         return null;
+     }
+ 
++
+     public int getRenderType()
+     {
+         return 1;
