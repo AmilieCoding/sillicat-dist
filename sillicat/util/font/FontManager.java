@@ -23,10 +23,10 @@ public class FontManager {
         return getFont("inter");
     }
     public CustomFont getTikTokBold() {
-        return getFont("tiktok_bold");
+        return getFont("inter");
     }
     public CustomFont getTikTokNormal() {
-        return getFont("tiktok_norm");
+        return getFont("inter");
     }
     private CustomFont getFont(String name) {
         if(!fonts.containsKey(name)) {

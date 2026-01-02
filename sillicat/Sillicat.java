@@ -18,6 +18,7 @@ import org.lwjgl.opengl.Display;
 import sillicat.config.ConfigManager;
 import sillicat.event.impl.EventKey;
 import sillicat.module.ModuleManager;
+import sillicat.module.impl.render.Notifications;
 import sillicat.ui.clickgui.ClickGUIScreen;
 import sillicat.util.alts.AltManager;
 import sillicat.util.font.FontManager;
@@ -75,6 +76,11 @@ public enum Sillicat implements Subscriber {
             mc.displayGuiScreen(new ClickGUIScreen());
         }
     });
+
+    public Notifications getNotificationsModule() {
+        return (Notifications) Sillicat.INSTANCE.getModuleManager().getModule(Notifications.class);
+    }
+
 
     public FontManager getFontManager(){
         return fontManager;

@@ -1,4 +1,3 @@
-// I used ChatGPT for the sticky code, for making it last longer - I couldn't be arsed doing it myself.
 package sillicat.module.impl.render;
 
 import net.minecraft.client.gui.Gui;
@@ -11,14 +10,12 @@ import sillicat.Sillicat;
 import sillicat.module.Category;
 import sillicat.module.Module;
 import sillicat.module.ModuleInfo;
-import sillicat.setting.impl.BindSetting;
+import sillicat.setting.impl.NumberSetting;
 import sillicat.ui.designLanguage.ColorScheme;
 import sillicat.ui.designLanguage.Theme;
+import sillicat.util.AnimationUtil;
 import sillicat.util.RenderUtil;
 import sillicat.util.font.CustomFontRenderer;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @ModuleInfo(
         name = "TargetHUD",
@@ -29,11 +26,7 @@ import java.util.List;
 )
 public class TargetHud extends Module {
 
-    public TargetHud(){
-        setKey(getKey());
-    }
-
-    private final List<Long> clicks = new ArrayList<Long>();
+    private final NumberSetting range = new NumberSetting("Range", 6, 1, 10, 1);
 
     private int width;
     private int height;
@@ -44,6 +37,14 @@ public class TargetHud extends Module {
     private long lastTargetTime;
     private final long stickyMs = 350;
 
+    private final AnimationUtil popAnim = new AnimationUtil(0f, 0.06f, AnimationUtil.Easing.EASE_OUT_BACK);
+    private EntityLivingBase prevTarget = null;
+
+    public TargetHud() {
+        addSettings(range);
+        setKey(getKey());
+    }
+
     @Override
     public void on2D(ScaledResolution sr) {
         width = 140;
@@ -52,16 +53,61 @@ public class TargetHud extends Module {
         int marginX = 140;
         int marginY = 130;
 
-        // lower-right portion (anchored near bottom-right with margins)
         x = sr.getScaledWidth() - width - marginX;
         y = sr.getScaledHeight() - height - marginY;
 
         CustomFontRenderer cfr = Sillicat.INSTANCE.getFontManager().getInter().size(18);
 
-        EntityLivingBase target = getStickyTarget(12.0, 70.0f);
-        if (target == null) return;
+        double r = range.getVal();
+        EntityLivingBase target = getStickyTarget(r, 70.0f);
 
-        RenderUtil.drawRect(x, y, width, height, 0xC0313335);
+        float pt = mc.timer.renderPartialTicks;
+
+        // Keep rendering last target while animating out
+        EntityLivingBase renderTarget = (target != null) ? target : prevTarget;
+
+        // Different speeds for in/out so it never "hangs"
+        popAnim.setSpeed(target == null ? 0.18f : 0.08f);
+
+        if (target != null) {
+            if (target != prevTarget) {
+                prevTarget = target;
+                // hard reset punch without needing setValue()
+                popAnim.setTarget(0f);
+                popAnim.update(8f);
+            }
+            popAnim.setTarget(1f);
+        } else {
+            popAnim.setTarget(0f);
+        }
+
+        popAnim.update(pt);
+        float t = popAnim.getValue();
+
+        // Kill the tail quickly on fade-out
+        if (target == null && t < 0.12f) {
+            prevTarget = null;
+            return;
+        }
+
+        if (t <= 0.02f) {
+            if (target == null) prevTarget = null;
+            return;
+        }
+
+        if (renderTarget == null) return;
+
+        float scale = 0.90f + (0.10f * t);
+        int cx = x + (width / 2);
+        int cy = y + (height / 2);
+
+        GL11.glPushMatrix();
+        GL11.glTranslatef(cx, cy, 0f);
+        GL11.glScalef(scale, scale, 1f);
+        GL11.glTranslatef(-cx, -cy, 0f);
+        GL11.glColor4f(1f, 1f, 1f, t);
+
+        RenderUtil.drawRoundedRect(x, y, width, height, 10, 0xC0313335);
 
         int pad = 6;
         int headSize = 24;
@@ -69,23 +115,26 @@ public class TargetHud extends Module {
         int contentX = x + pad;
         int contentY = y + pad;
 
-        boolean isPlayer = target instanceof EntityPlayer;
+        boolean isPlayer = renderTarget instanceof EntityPlayer;
 
         if (isPlayer) {
-            drawPlayerHead(contentX, contentY, headSize, (EntityPlayer) target);
+            drawPlayerHead(contentX, contentY, headSize, (EntityPlayer) renderTarget);
         }
 
         int textStartX = isPlayer ? (contentX + headSize + 8) : contentX;
         int nameY = contentY + 2;
 
-        String name = target.getName();
+        String name = renderTarget.getName();
         cfr.drawString(name, textStartX, nameY, 0xFFFFFFFF);
 
-        String hpText = String.format("%.0f\u2764", target.getHealth());
+        String hpText = String.format("%.0f\u2764", renderTarget.getHealth());
         float hpW = cfr.getWidth(hpText);
         cfr.drawString(hpText, x + width - pad - hpW, nameY, 0xFFFF4D4D);
 
-        renderHealthBar(target, pad);
+        renderHealthBar(renderTarget, pad);
+
+        GL11.glColor4f(1f, 1f, 1f, 1f);
+        GL11.glPopMatrix();
     }
 
     private void renderHealthBar(EntityLivingBase target, int pad) {
@@ -95,14 +144,15 @@ public class TargetHud extends Module {
         int left = x + pad;
         int top = y + height - pad - barH;
 
-        RenderUtil.drawRect(left, top, barW, barH, ColorScheme.PANEL_BG.get());
+        RenderUtil.drawRoundedRect(left, top, barW, barH, 5, ColorScheme.PANEL_BG.get());
 
-        float healthPercent = target.getHealth() / target.getMaxHealth();
+        float maxHp = target.getMaxHealth();
+        float healthPercent = maxHp <= 0f ? 0f : (target.getHealth() / maxHp);
         if (healthPercent < 0f) healthPercent = 0f;
         if (healthPercent > 1f) healthPercent = 1f;
 
         int filled = (int) (barW * healthPercent);
-        RenderUtil.drawRect(left, top, filled, barH, Theme.getAccent());
+        RenderUtil.drawRoundedRect(left, top, filled, barH, 5, Theme.getAccent());
     }
 
     private void drawPlayerHead(int x, int y, int size, EntityPlayer player) {
@@ -143,7 +193,7 @@ public class TargetHud extends Module {
 
             if (!isValidTarget(e, range)) continue;
             if (!isInFov(e, fovDegrees)) continue;
-            if (!mc.thePlayer.canEntityBeSeen(e)) continue; // remove if you want through-walls HUD
+            if (!mc.thePlayer.canEntityBeSeen(e)) continue;
 
             double dist = mc.thePlayer.getDistanceToEntity(e);
             if (dist < bestDist) {
@@ -158,8 +208,7 @@ public class TargetHud extends Module {
         if (e == null) return false;
         if (e == mc.thePlayer) return false;
         if (e.isDead || e.getHealth() <= 0) return false;
-        if (mc.thePlayer.getDistanceToEntity(e) > range) return false;
-        return true;
+        return mc.thePlayer.getDistanceToEntity(e) <= range;
     }
 
     private boolean isInFov(EntityLivingBase e, float fovDegrees) {

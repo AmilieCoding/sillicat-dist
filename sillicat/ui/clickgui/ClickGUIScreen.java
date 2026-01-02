@@ -1,6 +1,8 @@
 package sillicat.ui.clickgui;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.ScaledResolution;
 import sillicat.Sillicat;
 import sillicat.module.Category;
 import sillicat.ui.designLanguage.ColorScheme;
@@ -33,7 +35,7 @@ public class ClickGUIScreen extends GuiScreen {
 
         int startX = 20;
         int startY = 20;
-        int panelW = 160;
+        int panelW = 120;
         int panelH = 220;
         int gapX = 10;
 
