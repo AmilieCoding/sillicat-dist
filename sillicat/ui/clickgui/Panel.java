@@ -11,6 +11,7 @@ import sillicat.setting.impl.BooleanSetting;
 import sillicat.setting.impl.ModeSetting;
 import sillicat.setting.impl.NumberSetting;
 import sillicat.ui.designLanguage.ColorScheme;
+import sillicat.ui.designLanguage.Theme;
 import sillicat.util.HoverUtil;
 import sillicat.util.RenderUtil;
 import sillicat.util.ScissorUtil;
@@ -89,7 +90,7 @@ public class Panel {
             RenderUtil.drawRect(x + 2, yCursor, w - 4, ClickGUIConstants.ROW_H, ColorScheme.ROW_BG.get());
 
             if (m.isToggled()) {
-                RenderUtil.drawRect(x + 2, yCursor, 2, ClickGUIConstants.ROW_H, ColorScheme.ACCENT.get());
+                RenderUtil.drawRect(x + 2, yCursor, 2, ClickGUIConstants.ROW_H, Theme.getAccent());
             }
 
             boolean hovered = HoverUtil.isHovered(
@@ -98,7 +99,7 @@ public class Panel {
                     mouseX, mouseY
             );
             if (hovered) {
-                RenderUtil.drawRect(x + 2, yCursor, w - 4, ClickGUIConstants.ROW_H, ColorScheme.ACCENT.alpha(40));
+                RenderUtil.drawRect(x + 2, yCursor, w - 4, ClickGUIConstants.ROW_H, Theme.getAccentWithAlpha(40));
             }
 
             int textX = x + ClickGUIConstants.BODY_PAD + 3;
@@ -108,7 +109,7 @@ public class Panel {
 
             // Expanded marker (right edge)
             if (expanded == m) {
-                RenderUtil.drawRect(x + w - 4, yCursor, 2, ClickGUIConstants.ROW_H, ColorScheme.ACCENT.get());
+                RenderUtil.drawRect(x + w - 4, yCursor, 2, ClickGUIConstants.ROW_H, Theme.getAccent());
             }
 
             yCursor += ClickGUIConstants.ROW_H + ClickGUIConstants.ROW_GAP;
@@ -323,7 +324,7 @@ public class Panel {
                 if (t > 1) t = 1;
 
                 RenderUtil.drawRect(barX, barY, barW, barH, ColorScheme.ROW_BG.get());
-                RenderUtil.drawRect(barX, barY, (int) (barW * t), barH, ColorScheme.ACCENT.get());
+                RenderUtil.drawRect(barX, barY, (int) (barW * t), barH, Theme.getAccent());
 
                 ClickGUIConstants.SMALL_FONT.drawString(
                         setting.getName(),

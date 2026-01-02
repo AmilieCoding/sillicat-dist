@@ -5,8 +5,9 @@ import sillicat.Sillicat;
 import sillicat.module.Category;
 import sillicat.module.Module;
 import sillicat.module.ModuleInfo;
-import sillicat.setting.impl.BindSetting;
 import sillicat.setting.impl.ModeSetting;
+import sillicat.ui.designLanguage.ColorScheme;
+import sillicat.ui.designLanguage.Theme;
 import sillicat.util.AnimationUtil;
 import sillicat.util.RenderUtil;
 import sillicat.util.font.CustomFontRenderer;
@@ -102,11 +103,11 @@ public class ArrayList extends Module {
             float barX = textX - 6;
             float bgX  = textX - 4;
 
-            RenderUtil.drawRect((int) barX, (int) y, 2, 6 + h, 0xFFC226FF);
-            RenderUtil.drawRect((int) bgX,  (int) y, totalW + 8, 6 + h, 0x90000000);
+            RenderUtil.drawRect((int) barX, (int) y, 2, 6 + h, Theme.getAccent());
+            RenderUtil.drawRect((int) bgX,  (int) y, totalW + 8, 6 + h, ColorScheme.STANDARD_BG.get());
 
-            cfr.drawString(name, textX, 3 + y, 0xFFFFFFFF);
-            cfr.drawString(modeText, textX + nameW, 3 + y, 0xFFAAAAAA);
+            cfr.drawString(name, textX, 3 + y, ColorScheme.TEXT_PRIMARY.get());
+            cfr.drawString(modeText, textX + nameW, 3 + y, ColorScheme.TEXT_SECONDARY.get());
 
             offset += ROW_H * (mod.isToggled() ? 1f : t);
         }

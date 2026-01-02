@@ -15,6 +15,7 @@ import sillicat.Sillicat;
 import sillicat.module.Category;
 import sillicat.module.Module;
 import sillicat.ui.designLanguage.ColorScheme;
+import sillicat.ui.designLanguage.Theme;
 import sillicat.util.HoverUtil;
 import sillicat.util.RenderUtil;
 import sillicat.util.font.CustomFontRenderer;
@@ -204,7 +205,7 @@ public class ClickGUIScreenLegacy extends GuiScreen {
                             yOffset,
                             boxW - (ROW_INSET * 2),
                             ROW_H,
-                            ColorScheme.ACCENT.alpha(40)
+                            Theme.getAccentWithAlpha(40)
                     );
                 }
 
@@ -241,7 +242,7 @@ public class ClickGUIScreenLegacy extends GuiScreen {
                         toggleSize - 1,
                         toggleSize - 1,
                         module.isToggled()
-                                ? ColorScheme.ACCENT.get()
+                                ? Theme.getAccent()
                                 : ColorScheme.ROW_BG.get()
                 );
             }

@@ -12,6 +12,8 @@ import sillicat.module.Category;
 import sillicat.module.Module;
 import sillicat.module.ModuleInfo;
 import sillicat.setting.impl.BindSetting;
+import sillicat.ui.designLanguage.ColorScheme;
+import sillicat.ui.designLanguage.Theme;
 import sillicat.util.RenderUtil;
 import sillicat.util.font.CustomFontRenderer;
 
@@ -93,14 +95,14 @@ public class TargetHud extends Module {
         int left = x + pad;
         int top = y + height - pad - barH;
 
-        RenderUtil.drawRect(left, top, barW, barH, 0xFF19170D);
+        RenderUtil.drawRect(left, top, barW, barH, ColorScheme.PANEL_BG.get());
 
         float healthPercent = target.getHealth() / target.getMaxHealth();
         if (healthPercent < 0f) healthPercent = 0f;
         if (healthPercent > 1f) healthPercent = 1f;
 
         int filled = (int) (barW * healthPercent);
-        RenderUtil.drawRect(left, top, filled, barH, 0xFFC226FF);
+        RenderUtil.drawRect(left, top, filled, barH, Theme.getAccent());
     }
 
     private void drawPlayerHead(int x, int y, int size, EntityPlayer player) {

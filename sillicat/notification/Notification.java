@@ -2,6 +2,8 @@ package sillicat.notification;
 
 import net.minecraft.client.gui.ScaledResolution;
 import sillicat.Sillicat;
+import sillicat.ui.designLanguage.ColorScheme;
+import sillicat.ui.designLanguage.Theme;
 import sillicat.util.AnimationUtil;
 import sillicat.util.RenderUtil;
 import sillicat.util.font.CustomFontRenderer;
@@ -56,7 +58,7 @@ public class Notification {
         float slide = (1f - t) * (width + 14f);
         int x = (int) (baseX + slide);
 
-        RenderUtil.drawRect(x, y, width, height, 0x90000000);
+        RenderUtil.drawRect(x, y, width, height, ColorScheme.STANDARD_BG.get());
 
         CustomFontRenderer cfr = Sillicat.INSTANCE.getFontManager().getInter().size(18);
         CustomFontRenderer cfrLarge = Sillicat.INSTANCE.getFontManager().getInter().size(20);
@@ -65,6 +67,6 @@ public class Notification {
         cfr.drawString(moduleName + " " + status, x + 3, y + 16, -1);
 
         int progressBarWidth = (int) (width * (1 - progress));
-        RenderUtil.drawRect(x, y + height - 2, progressBarWidth, 2, 0xFFC226FF);
+        RenderUtil.drawRect(x, y + height - 2, progressBarWidth, 2, Theme.getAccent());
     }
 }
