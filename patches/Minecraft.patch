@@ -1,0 +1,59 @@
+--- /home/amilie/Desktop/MavenMCP-1.8.9-master-backup/src/main/java/net/minecraft/client/Minecraft.java	2025-12-30 22:08:19.777017198 +0000
++++ net/minecraft/client/Minecraft.java	2026-01-01 22:14:24.797856609 +0000
+@@ -184,6 +184,8 @@
+ import org.lwjgl.opengl.OpenGLException;
+ import org.lwjgl.opengl.PixelFormat;
+ import org.lwjgl.util.glu.GLU;
++import sillicat.Sillicat;
++import sillicat.event.impl.EventKey;
+ 
+ public class Minecraft implements IThreadListener, IPlayerUsage
+ {
+@@ -206,7 +208,7 @@
+     public int displayWidth;
+     public int displayHeight;
+     private boolean connectedToRealms = false;
+-    private Timer timer = new Timer(20.0F);
++    public Timer timer = new Timer(20.0F);
+     private PlayerUsageSnooper usageSnooper = new PlayerUsageSnooper("client", this, MinecraftServer.getCurrentTimeMillis());
+     public WorldClient theWorld;
+     public RenderGlobal renderGlobal;
+@@ -217,7 +219,7 @@
+     private Entity renderViewEntity;
+     public Entity pointedEntity;
+     public EffectRenderer effectRenderer;
+-    private final Session session;
++    public Session session;
+     private boolean isGamePaused;
+     public FontRenderer fontRendererObj;
+     public FontRenderer standardGalacticFontRenderer;
+@@ -486,6 +488,9 @@
+         this.checkGLError("Post startup");
+         this.ingameGUI = new GuiIngame(this);
+ 
++        // Start sillicat :p
++        Sillicat.INSTANCE.init();
++
+         if (this.serverName != null)
+         {
+             this.displayGuiScreen(new GuiConnecting(new GuiMainMenu(), this, this.serverName, this.serverPort));
+@@ -938,6 +943,9 @@
+     {
+         try
+         {
++            // Kill sillicat :p
++            Sillicat.INSTANCE.shutdown();
++
+             this.stream.shutdownStream();
+             logger.info("Stopping!");
+ 
+@@ -1793,6 +1801,9 @@
+                     }
+                     else
+                     {
++                        // Sillicat injection for events :p
++                        Sillicat.BUS.post(new EventKey(k));
++
+                         if (k == 1)
+                         {
+                             this.displayInGameMenu();

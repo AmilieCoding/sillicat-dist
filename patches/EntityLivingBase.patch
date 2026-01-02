@@ -1,0 +1,29 @@
+--- /home/amilie/Desktop/MavenMCP-1.8.9-master-backup/src/main/java/net/minecraft/entity/EntityLivingBase.java	2025-12-30 22:08:19.801549882 +0000
++++ net/minecraft/entity/EntityLivingBase.java	2026-01-02 11:48:13.850097381 +0000
+@@ -80,6 +80,10 @@
+     public float prevRenderYawOffset;
+     public float rotationYawHead;
+     public float prevRotationYawHead;
++
++    public float rotationPitchHead;
++    public float prevRotationPitchHead;
++
+     public float jumpMovementFactor = 0.02F;
+     protected EntityPlayer attackingPlayer;
+     protected int recentlyHit;
+@@ -127,6 +131,7 @@
+         this.randomUnused2 = (float)Math.random() * 12398.0F;
+         this.rotationYaw = (float)(Math.random() * Math.PI * 2.0D);
+         this.rotationYawHead = this.rotationYaw;
++        this.rotationPitchHead = this.rotationPitch;
+         this.stepHeight = 0.6F;
+     }
+ 
+@@ -298,6 +303,7 @@
+         this.prevMovedDistance = this.movedDistance;
+         this.prevRenderYawOffset = this.renderYawOffset;
+         this.prevRotationYawHead = this.rotationYawHead;
++        this.prevRotationPitchHead = this.rotationPitchHead;
+         this.prevRotationYaw = this.rotationYaw;
+         this.prevRotationPitch = this.rotationPitch;
+         this.worldObj.theProfiler.endSection();

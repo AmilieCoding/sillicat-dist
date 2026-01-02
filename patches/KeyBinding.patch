@@ -1,0 +1,20 @@
+--- /home/amilie/Desktop/mavenmcp-raw/src/main/java/net/minecraft/client/settings/KeyBinding.java	2021-11-02 23:13:54.412919000 +0000
++++ net/minecraft/client/settings/KeyBinding.java	2025-12-29 20:22:18.051503289 +0000
+@@ -4,6 +4,8 @@
+ import com.google.common.collect.Sets;
+ import java.util.List;
+ import java.util.Set;
++
++import lombok.Setter;
+ import net.minecraft.client.resources.I18n;
+ import net.minecraft.util.IntHashMap;
+ 
+@@ -16,6 +18,8 @@
+     private final int keyCodeDefault;
+     private final String keyCategory;
+     private int keyCode;
++    // For sillicat toggle sprint.
++    @Setter
+     private boolean pressed;
+     private int pressTime;
+ 
