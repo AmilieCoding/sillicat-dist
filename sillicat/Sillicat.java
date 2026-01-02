@@ -13,6 +13,7 @@ import me.zero.alpine.listener.Subscribe;
 import me.zero.alpine.listener.Subscriber;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.resources.FolderResourcePack;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import sillicat.config.ConfigManager;
@@ -22,6 +23,8 @@ import sillicat.module.impl.render.Notifications;
 import sillicat.ui.clickgui.ClickGUIScreen;
 import sillicat.util.alts.AltManager;
 import sillicat.util.font.FontManager;
+
+import java.io.File;
 
 @Getter
 public enum Sillicat implements Subscriber {

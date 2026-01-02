@@ -3,6 +3,7 @@ package sillicat.ui.clickgui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.util.ResourceLocation;
 import sillicat.Sillicat;
 import sillicat.module.Category;
 import sillicat.ui.designLanguage.ColorScheme;
@@ -32,6 +33,9 @@ public class ClickGUIScreen extends GuiScreen {
 
     public void initGui(){
         panels.clear();
+        System.out.println("GAME DIR = " + mc.mcDataDir.getAbsolutePath());
+
+
 
         int startX = 20;
         int startY = 20;

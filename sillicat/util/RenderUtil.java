@@ -29,7 +29,8 @@ public class RenderUtil {
         float f1 = (color >> 16 & 0xFF) / 255.0F;
         float f2 = (color >> 8 & 0xFF) / 255.0F;
         float f3 = (color & 0xFF) / 255.0F;
-        GL11.glPushAttrib(0);
+        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+        GL11.glPushMatrix();
         GL11.glScaled(0.5, 0.5, 0.5);
 
         x *= 2;
@@ -67,8 +68,10 @@ public class RenderUtil {
 
         GL11.glScaled(2, 2, 2);
 
+        GL11.glPopMatrix();
         GL11.glPopAttrib();
-        GL11.glColor4f(1, 1, 1, 1);
+
+        GlStateManager.color(1f, 1f, 1f, 1f);
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
 

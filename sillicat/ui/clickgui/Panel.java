@@ -1,13 +1,20 @@
 package sillicat.ui.clickgui;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import sillicat.Sillicat;
 import sillicat.module.Category;
 import sillicat.module.Module;
+import sillicat.module.impl.render.ClickGUI;
 import sillicat.setting.Setting;
 import sillicat.setting.impl.BindSetting;
 import sillicat.setting.impl.BooleanSetting;
@@ -15,10 +22,7 @@ import sillicat.setting.impl.ModeSetting;
 import sillicat.setting.impl.NumberSetting;
 import sillicat.ui.designLanguage.ColorScheme;
 import sillicat.ui.designLanguage.Theme;
-import sillicat.util.AnimationUtil;
-import sillicat.util.HoverUtil;
-import sillicat.util.RenderUtil;
-import sillicat.util.ScissorUtil;
+import sillicat.util.*;
 
 public class Panel {
     final Category category;
@@ -202,6 +206,79 @@ public class Panel {
         clampScroll(base + extra);
 
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
+
+        sillicat.module.impl.render.ClickGUI cfg =
+                (sillicat.module.impl.render.ClickGUI) Sillicat.INSTANCE
+                        .getModuleManager()
+                        .getModule(sillicat.module.impl.render.ClickGUI.class);
+
+        GlStateManager.disableLighting();
+        GlStateManager.disableFog();
+        GlStateManager.disableCull();
+        GlStateManager.enableAlpha();
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
+
+        GlStateManager.enableTexture2D();
+        GlStateManager.color(1f, 1f, 1f, 1f);
+
+        ResourceLocation tex = ClickGUI.WAIFU_TEX.get(cfg.waifu.getCurrMode());
+        if (tex != null) {
+            try {
+                ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
+
+                // Bind texture first to ensure it's loaded
+                Minecraft.getMinecraft().getTextureManager().bindTexture(tex);
+
+                TextureInfo ti = TextureInfo.of(tex);
+
+                // Fallback if TextureInfo fails
+                if (ti == null || ti.w <= 0 || ti.h <= 0) {
+                    ti = new TextureInfo(256, 256); // Default texture size
+                }
+
+                int drawH = (int)(sr.getScaledHeight() * 0.4f);
+                int drawW = (int)(drawH * (ti.w / (float) ti.h));
+
+                int x = sr.getScaledWidth() - drawW - 10;
+                int y = sr.getScaledHeight() - drawH - 10;
+
+                // Reset render state
+                GlStateManager.pushMatrix();
+                GlStateManager.enableBlend();
+                GlStateManager.tryBlendFuncSeparate(
+                        GL11.GL_SRC_ALPHA,
+                        GL11.GL_ONE_MINUS_SRC_ALPHA,
+                        GL11.GL_ONE,
+                        GL11.GL_ZERO
+                );
+                GlStateManager.disableLighting();
+                GlStateManager.disableDepth();
+                GlStateManager.enableTexture2D();
+                GlStateManager.color(1f, 1f, 1f, 1f);
+
+                // Use Tessellator for more reliable rendering
+                Tessellator tessellator = Tessellator.getInstance();
+                WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+
+                worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX);
+                worldrenderer.pos(x, y + drawH, 0).tex(0, 1).endVertex();
+                worldrenderer.pos(x + drawW, y + drawH, 0).tex(1, 1).endVertex();
+                worldrenderer.pos(x + drawW, y, 0).tex(1, 0).endVertex();
+                worldrenderer.pos(x, y, 0).tex(0, 0).endVertex();
+                tessellator.draw();
+
+                GlStateManager.enableDepth();
+                GlStateManager.disableBlend();
+                GlStateManager.popMatrix();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+
+
     }
 
     private int getSettingsHeight(Module m) {
@@ -459,8 +536,8 @@ public class Panel {
             );
 
             y += SETTING_H + SETTING_GAP;
-        }
 
+            }
         return y - startY;
     }
 
