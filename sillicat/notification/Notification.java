@@ -2,7 +2,7 @@ package sillicat.notification;
 
 import net.minecraft.client.gui.ScaledResolution;
 import sillicat.Sillicat;
-import sillicat.module.impl.render.Notifications;
+import sillicat.module.impl.settings.Notifications;
 import sillicat.ui.designLanguage.ColorScheme;
 import sillicat.ui.designLanguage.Theme;
 import sillicat.util.AnimationUtil;

@@ -13,18 +13,15 @@ import me.zero.alpine.listener.Subscribe;
 import me.zero.alpine.listener.Subscriber;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.resources.FolderResourcePack;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import sillicat.config.ConfigManager;
 import sillicat.event.impl.EventKey;
 import sillicat.module.ModuleManager;
-import sillicat.module.impl.render.Notifications;
+import sillicat.module.impl.settings.Notifications;
 import sillicat.ui.clickgui.ClickGUIScreen;
 import sillicat.util.alts.AltManager;
 import sillicat.util.font.FontManager;
-
-import java.io.File;
 
 @Getter
 public enum Sillicat implements Subscriber {
@@ -57,10 +54,13 @@ public enum Sillicat implements Subscriber {
         configManager = new ConfigManager();
         altManager = new AltManager();
 
+        Sillicat.INSTANCE.getAltManager().autoLoginLastSession();
+
         configManager.loadConfig();
     }
 
     public void shutdown(){
+        Sillicat.INSTANCE.getAltManager().saveAlts();
         BUS.unsubscribe(this);
         configManager.saveConfig();
     }

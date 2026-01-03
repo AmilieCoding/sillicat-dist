@@ -1,20 +1,18 @@
 package sillicat.ui.clickgui;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import sillicat.Sillicat;
 import sillicat.module.Category;
 import sillicat.module.Module;
-import sillicat.module.impl.render.ClickGUI;
+import sillicat.module.impl.settings.ClickGUI;
 import sillicat.setting.Setting;
 import sillicat.setting.impl.BindSetting;
 import sillicat.setting.impl.BooleanSetting;
@@ -207,10 +205,10 @@ public class Panel {
 
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
 
-        sillicat.module.impl.render.ClickGUI cfg =
-                (sillicat.module.impl.render.ClickGUI) Sillicat.INSTANCE
+        ClickGUI cfg =
+                (ClickGUI) Sillicat.INSTANCE
                         .getModuleManager()
-                        .getModule(sillicat.module.impl.render.ClickGUI.class);
+                        .getModule(ClickGUI.class);
 
         GlStateManager.disableLighting();
         GlStateManager.disableFog();
@@ -330,6 +328,8 @@ public class Panel {
             // Click hitboxes stay "full height" (instant), even if the render anim is mid-way.
             if (expanded == m) {
                 for (Setting s : m.getSettingList()) {
+                    if(!s.isVisible()) continue;
+
                     boolean overSettingRow = HoverUtil.isHovered(
                             x + SETTING_INSET, yCursor,
                             x + w - SETTING_INSET, yCursor + SETTING_H,
@@ -429,7 +429,9 @@ public class Panel {
         int y = startY;
 
         for (Setting setting : module.getSettingList()) {
+            if (!setting.isVisible()) continue;
             // Setting row base
+
             RenderUtil.drawRect(
                     x + SETTING_INSET,
                     y,
@@ -438,12 +440,12 @@ public class Panel {
                     ColorScheme.PANEL_BG_ALT.get()
             );
 
-            // Hover tint (animated a bit using simple alpha from hover test)
             boolean hovered = HoverUtil.isHovered(
                     x + SETTING_INSET, y,
                     x + w - SETTING_INSET, y + SETTING_H,
                     mouseX, mouseY
             );
+
             if (hovered) {
                 RenderUtil.drawRect(
                         x + SETTING_INSET,
@@ -529,6 +531,13 @@ public class Panel {
                     : ColorScheme.TEXT_PRIMARY.get();
 
             ClickGUIConstants.SMALL_FONT.drawString(
+                    setting.getName(),
+                    x + SETTING_INSET + 2,
+                    textYLeft,
+                    ColorScheme.TEXT_SECONDARY.get()
+            );
+
+            ClickGUIConstants.SMALL_FONT.drawString(
                     valueStr,
                     rightX,
                     textYRight,
@@ -536,8 +545,8 @@ public class Panel {
             );
 
             y += SETTING_H + SETTING_GAP;
+        }
 
-            }
         return y - startY;
     }
 

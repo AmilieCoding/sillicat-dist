@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sillicat.Sillicat;
-import sillicat.module.impl.render.Notifications;
+import sillicat.module.impl.settings.Notifications;
 
 public class NotificationManager {
     private static final List<Notification> notificiations = new ArrayList<>();
