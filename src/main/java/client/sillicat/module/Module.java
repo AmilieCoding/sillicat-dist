@@ -29,7 +29,7 @@ public abstract class Module implements Subscriber {
     private boolean toggled;
     private final int defaultKey;
     @Getter
-    private final int key;
+    private int key;
 
     // Import Minecraft from Sillicat - instead of spaghetti code :).
     protected final Minecraft mc = Sillicat.INSTANCE.mc();
@@ -59,21 +59,9 @@ public abstract class Module implements Subscriber {
 
         if (state) {
             Sillicat.BUS.subscribe(this);
-            Sillicat.BUS.subscribe(eventUpdateListener);
-            Sillicat.BUS.subscribe(event2DListener);
-            Sillicat.BUS.subscribe(eventKeyListener);
-            Sillicat.BUS.subscribe(eventRotateListener);
-            Sillicat.BUS.subscribe(eventMotionPreListener);
-            Sillicat.BUS.subscribe(eventMotionPostListener);
             onEnable();
         } else {
             Sillicat.BUS.unsubscribe(this);
-            Sillicat.BUS.unsubscribe(eventUpdateListener);
-            Sillicat.BUS.unsubscribe(event2DListener);
-            Sillicat.BUS.unsubscribe(eventKeyListener);
-            Sillicat.BUS.unsubscribe(eventRotateListener);
-            Sillicat.BUS.unsubscribe(eventMotionPreListener);
-            Sillicat.BUS.unsubscribe(eventMotionPostListener);
             onDisable();
         }
     }
@@ -95,29 +83,29 @@ public abstract class Module implements Subscriber {
     public void onToggle(){}
 
     @Subscribe
-    private final Listener<EventUpdate> eventUpdateListener = new Listener<>(e ->{
+    public final Listener<EventUpdate> eventUpdateListener = new Listener<>(e ->{
         if(toggled) onUpdate();
     });
 
     @Subscribe
-    private final Listener<Event2D> event2DListener = new Listener<>(e ->{
+    public final Listener<Event2D> event2DListener = new Listener<>(e ->{
         if(toggled) on2D(e.getSr());
     });
 
     @Subscribe
-    private final Listener<EventKey> eventKeyListener = new Listener<>(e ->{
+    public final Listener<EventKey> eventKeyListener = new Listener<>(e ->{
         if(toggled) onKey(e.getKey());
     });
 
-    private final Listener<EventRotate> eventRotateListener = new Listener<>(e ->{
+    public final Listener<EventRotate> eventRotateListener = new Listener<>(e ->{
         if(toggled) onRotate();
     });
 
-    private final Listener<EventMotionPre> eventMotionPreListener = new Listener<>(e ->{
+    public final Listener<EventMotionPre> eventMotionPreListener = new Listener<>(e ->{
         if(toggled) onMotionPre();
     });
 
-    private final Listener<EventMotionPost> eventMotionPostListener = new Listener<>(e ->{
+    public final Listener<EventMotionPost> eventMotionPostListener = new Listener<>(e ->{
         if(toggled) onMotionPost();
     });
 }

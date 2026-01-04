@@ -53,10 +53,11 @@ public enum Sillicat implements Subscriber {
     }
 
     @Subscribe
-    private final Listener<EventKey> eventKeyListener = new Listener<>(e ->{
+    public final Listener<EventKey> eventKeyListener = new Listener<>(e ->{
         if(moduleManager != null){
             moduleManager.getModules().values().forEach(module -> {
                 if(module.getKey() == e.getKey()){
+                    Logger.log("Key event: " + e.getKey());
                     module.toggle();
                 }
             });
