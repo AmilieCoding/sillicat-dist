@@ -1,4 +1,4 @@
-### Sillicat
+# Sillicat
 Sillicat is a modern 1.8.9 client designed with philosophies of those that came before like Astolfo, Novoline and similar.<br>
 With a focus on being open, yet effective - Sillicat is designed with the user in mind, rather than the utilitarian designs of past.<br>
 When using Sillicat, the user will have a smooth, clean and appealing experience whilst retaining customisation of colors, sizes, animations and font size.<br>
