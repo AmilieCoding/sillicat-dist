@@ -9,7 +9,6 @@ import java.util.Set;
 @Getter
 public class ModuleManager {
     private final HashMap<Class<? extends Module>, Module> modules;
-
     public ModuleManager(){
         this.modules = new HashMap<>();
         register();
@@ -32,12 +31,14 @@ public class ModuleManager {
         return getModules().values().stream().filter(module -> module.getCategory() == category).toArray(Module[]::new);
     }
 
+    // Flaily fixed this code because turns out, I wasn't registering my modules.
+    // Fuck reflection.
     public void register(){
-        final Reflections refl = new Reflections("sillicat.module.impl");
+        final Reflections refl = new Reflections("client.sillicat.module.impl");
         final Set<Class<? extends Module>> classes = refl.getSubTypesOf(Module.class);
 
         for(Class<? extends Module> c : classes){
-            try{
+            try{ // lemme open old codebase new windopw
                 final Module module = c.newInstance();
                 modules.put(c, module);
             }catch(InstantiationException | IllegalAccessException e){}
