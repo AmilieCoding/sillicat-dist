@@ -82,30 +82,30 @@ public abstract class Module implements Subscriber {
 
     public void onToggle(){}
 
-    @Subscribe
-    public final Listener<EventUpdate> eventUpdateListener = new Listener<>(e ->{
-        if(toggled) onUpdate();
-    });
-
-    @Subscribe
-    public final Listener<Event2D> event2DListener = new Listener<>(e ->{
-        if(toggled) on2D(e.getSr());
-    });
-
-    @Subscribe
-    public final Listener<EventKey> eventKeyListener = new Listener<>(e ->{
-        if(toggled) onKey(e.getKey());
-    });
-
-    public final Listener<EventRotate> eventRotateListener = new Listener<>(e ->{
-        if(toggled) onRotate();
-    });
-
-    public final Listener<EventMotionPre> eventMotionPreListener = new Listener<>(e ->{
-        if(toggled) onMotionPre();
-    });
-
-    public final Listener<EventMotionPost> eventMotionPostListener = new Listener<>(e ->{
-        if(toggled) onMotionPost();
-    });
+//    @Subscribe
+//    public final Listener<EventUpdate> eventUpdateListener = new Listener<>(e ->{
+//        if(toggled) onUpdate();
+//    });
+//
+//    @Subscribe
+//    public final Listener<Event2D> event2DListener = new Listener<>(e ->{
+//        if(toggled) on2D(e.getSr());
+//    });
+//
+//    @Subscribe
+//    public final Listener<EventKey> eventKeyListener = new Listener<>(e ->{
+//        if(toggled) onKey(e.getKey());
+//    });
+//
+//    public final Listener<EventRotate> eventRotateListener = new Listener<>(e ->{
+//        if(toggled) onRotate();
+//    });
+//
+//    public final Listener<EventMotionPre> eventMotionPreListener = new Listener<>(e ->{
+//        if(toggled) onMotionPre();
+//    });
+//
+//    public final Listener<EventMotionPost> eventMotionPostListener = new Listener<>(e ->{
+//        if(toggled) onMotionPost();
+//    });
 }

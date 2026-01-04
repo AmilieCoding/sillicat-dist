@@ -1,8 +1,11 @@
 package client.sillicat.module.impl.render;
 
+import client.sillicat.event.impl.Event2D;
 import client.sillicat.module.Category;
 import client.sillicat.module.Module;
 import client.sillicat.module.ModuleInfo;
+import me.zero.alpine.listener.Listener;
+import me.zero.alpine.listener.Subscribe;
 import org.lwjgl.input.Keyboard;
 
 @ModuleInfo(
@@ -26,4 +29,8 @@ public class Fullbright extends Module {
 
         super.onDisable();
     }
+
+    @Subscribe
+    public final Listener<Event2D> event2DListener = new Listener<>(e ->{
+    });
 }
