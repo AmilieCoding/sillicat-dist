@@ -1,4 +1,7 @@
 package client.sillicat;
 
-public enum Sillicat {
+// Alpine >>> Events System
+import me.zero.alpine.listener.Subscriber;
+
+public enum Sillicat implements Subscriber {
 }

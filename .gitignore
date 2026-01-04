@@ -50,3 +50,7 @@ logs/
 # Legal compliance stuff.
 # !!!! NEVER REMOVE !!!!
 ./src/main/java/net/
+/src/main/resources/assets/minecraft
+/src/main/resources/log4j2.xml
+/src/main/resources/pack.png
+/src/test
