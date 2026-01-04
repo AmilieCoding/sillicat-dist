@@ -1,5 +1,5 @@
-# Sillicat Dist
-Sillicat distribution repo, a fun client I'm working on that is **NO LONGER** !!!! 100% skidded from a youtube guide.<br>
+# client.sillicat.Sillicat Dist
+client.sillicat.Sillicat distribution repo, a fun client I'm working on that is **NO LONGER** !!!! 100% skidded from a youtube guide.<br>
 https://www.youtube.com/watch?v=cg5wMogMohw&list=PLa9z_3uMqXcWQui2tT9Qok8QzN7nX7OwK&index=1<br>
 See the guide, here.
 
