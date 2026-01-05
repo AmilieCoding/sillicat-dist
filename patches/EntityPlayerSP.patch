@@ -1,0 +1,19 @@
+--- /home/amilie/Desktop/MavenMCP-1.8.9/src/main/java/net/minecraft/client/entity/EntityPlayerSP.java	2026-01-04 10:57:56.224531752 +0000
++++ src/main/java/net/minecraft/client/entity/EntityPlayerSP.java	2026-01-04 13:12:51.050774894 +0000
+@@ -1,5 +1,7 @@
+ package net.minecraft.client.entity;
+ 
++import client.sillicat.Sillicat;
++import client.sillicat.event.impl.EventUpdate;
+ import net.minecraft.client.Minecraft;
+ import net.minecraft.client.audio.MovingSoundMinecartRiding;
+ import net.minecraft.client.audio.PositionedSoundRecord;
+@@ -169,6 +171,8 @@
+     {
+         if (this.worldObj.isBlockLoaded(new BlockPos(this.posX, 0.0D, this.posZ)))
+         {
++            Sillicat.BUS.post(new EventUpdate());
++
+             super.onUpdate();
+ 
+             if (this.isRiding())
